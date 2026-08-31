@@ -3,11 +3,7 @@
   "version": "1.0.0",
   "description": "Physics-Informed Pollution Early Warning System",
   "main": "index.html",
-  "scripts": {
-    "dev": "npx serve .",
-    "start": "npx serve .",
-    "build": "echo 'Static build ready'"
-  },
+  
   "keywords": [
     "air-quality",
     "aqi",
