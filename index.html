@@ -1,1242 +1,1380 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="AeroShield — Physics-Informed Pollution Early Warning System. Predicts severe urban air-pollution episodes by combining air-quality data with atmospheric conditions."/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="AeroShield — Physics-Informed Pollution Early Warning System. Predicts severe urban air-pollution episodes by combining air-quality data with atmospheric conditions." />
   <title>AeroShield — Pollution Early Warning System</title>
-  <link rel="icon" type="image/png" href="AS logo.png"/>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css" />
   <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
 </head>
+
 <body>
 
-<!-- ============================================================
+  <!-- ============================================================
      MOBILE NAV OVERLAY
      ============================================================ -->
-<div class="mobile-nav-overlay" aria-hidden="true"></div>
+  <div class="mobile-nav-overlay" aria-hidden="true"></div>
 
-<div class="app-wrapper">
+  <div class="app-wrapper">
 
-<!-- ============================================================
+    <!-- ============================================================
      SIDEBAR NAVIGATION
      ============================================================ -->
-<aside class="sidebar" role="navigation" aria-label="Main navigation">
+    <aside class="sidebar" role="navigation" aria-label="Main navigation">
 
-  <!-- Logo -->
-  <div class="sidebar-logo">
-    <a href="#" class="logo-mark full-logo-mark" aria-label="AeroShield Home">
-      <img src="AS logo.png" alt="AeroShield" class="logo-full-img"/>
-    </a>
-  </div>
+      <!-- Logo -->
+      <div class="sidebar-logo">
+        <a href="#" class="logo-mark" aria-label="AeroShield Home">
+          <div class="logo-icon" aria-hidden="true">🛡️</div>
+          <div class="logo-text">
+            <span class="logo-name">AeroShield</span>
+            <span class="logo-tagline">Pollution Early Warning</span>
+          </div>
+        </a>
+      </div>
 
-  <!-- Location / Mode -->
-  <div class="sidebar-location">
-    <div class="location-label">Region</div>
-    <div class="location-name">Delhi-NCR, India</div>
-    <div class="prototype-badge">
-      <span class="prototype-dot" aria-hidden="true"></span>
-      <!-- Prototype Mode -->
-    </div>
-  </div>
+      <!-- Location / Mode -->
+      <div class="sidebar-location">
+        <div class="location-label">Region</div>
+        <div class="location-name">Delhi-NCR, India</div>
+        <div class="prototype-badge">
+          <span class="prototype-dot" aria-hidden="true"></span>
+          Prototype Mode
+        </div>
+      </div>
 
-  <!-- Nav Links -->
-  <nav class="sidebar-nav">
-    <div class="nav-section-label">Dashboard</div>
+      <!-- Nav Links -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Dashboard</div>
 
-    <button class="nav-item active" data-section="overview" aria-label="Overview">
-      <span class="nav-icon" aria-hidden="true">📊</span>
-      Overview
-      <span class="nav-badge" aria-label="High risk alert">HIGH</span>
-    </button>
+        <button class="nav-item active" data-section="overview" aria-label="Overview">
+          <span class="nav-icon" aria-hidden="true">📊</span>
+          Overview
+          <span class="nav-badge" aria-label="High risk alert">HIGH</span>
+        </button>
 
-    <button class="nav-item" data-section="forecast" aria-label="Forecast">
-      <span class="nav-icon" aria-hidden="true">📈</span>
-      Forecast
-    </button>
+        <button class="nav-item" data-section="forecast" aria-label="Forecast">
+          <span class="nav-icon" aria-hidden="true">📈</span>
+          Forecast
+        </button>
 
-    <button class="nav-item" data-section="episode" aria-label="Episode Risk">
-      <span class="nav-icon" aria-hidden="true">⚠️</span>
-      Episode Risk
-    </button>
+        <button class="nav-item" data-section="episode" aria-label="Episode Risk">
+          <span class="nav-icon" aria-hidden="true">⚠️</span>
+          Episode Risk
+        </button>
 
-    <div class="nav-section-label">Analysis</div>
+        <div class="nav-section-label">Analysis</div>
 
-    <button class="nav-item" data-section="atmospheric" aria-label="Atmospheric Conditions">
-      <span class="nav-icon" aria-hidden="true">🌡️</span>
-      Atmospheric
-    </button>
+        <button class="nav-item" data-section="atmospheric" aria-label="Atmospheric Conditions">
+          <span class="nav-icon" aria-hidden="true">🌡️</span>
+          Atmospheric
+        </button>
 
-    <button class="nav-item" data-section="explainability" aria-label="Explainability">
-      <span class="nav-icon" aria-hidden="true">🧠</span>
-      Explainability
-    </button>
+        <button class="nav-item" data-section="explainability" aria-label="Explainability">
+          <span class="nav-icon" aria-hidden="true">🧠</span>
+          Explainability
+        </button>
 
-    <div class="nav-section-label">Info</div>
+        <div class="nav-section-label">Info</div>
 
-    <button class="nav-item" data-section="about" aria-label="About AeroShield">
-      <span class="nav-icon" aria-hidden="true">ℹ️</span>
-      About
-    </button>
-  </nav>
+        <button class="nav-item" data-section="about" aria-label="About AeroShield">
+          <span class="nav-icon" aria-hidden="true">ℹ️</span>
+          About
+        </button>
+      </nav>
 
-  <!-- Bottom: Theme Toggle -->
-  <div class="sidebar-bottom">
-    <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle color theme">
-      <span aria-hidden="true">☀️</span> Light Mode
-    </button>
-  </div>
-</aside>
+      <!-- Bottom: Theme Toggle -->
+      <div class="sidebar-bottom">
+        <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle color theme">
+          <span aria-hidden="true">☀️</span> Light Mode
+        </button>
+      </div>
+    </aside>
 
-<!-- ============================================================
+    <!-- ============================================================
      MAIN CONTENT
      ============================================================ -->
-<main class="main-content" role="main">
+    <main class="main-content" role="main">
 
-  <!-- Top Bar -->
-  <header class="top-bar">
-    <div class="top-bar-left">
-      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false">☰</button>
-      <div>
-        <div class="page-title" id="pageTitle">Overview</div>
-        <div class="page-subtitle">Delhi-NCR Air Quality Intelligence</div>
-      </div>
-    </div>
-    <div class="top-bar-right">
-      <span class="last-updated" id="lastUpdated" aria-live="polite">Updated 21:42, 31 Aug</span>
-      <div class="status-indicator" aria-label="System status: Active">
-        <span class="status-dot" aria-hidden="true"></span>
-        Prototype Active
-      </div>
-    </div>
-  </header>
+      <!-- Top Bar -->
+      <header class="top-bar">
+        <div class="top-bar-left">
+          <button class="hamburger" id="hamburgerBtn" aria-label="Toggle navigation menu"
+            aria-expanded="false">☰</button>
+          <div>
+            <div class="page-title" id="pageTitle">Overview</div>
+            <div class="page-subtitle">Delhi-NCR Air Quality Intelligence</div>
+          </div>
+        </div>
+        <div class="top-bar-right">
+          <span class="last-updated" id="lastUpdated" aria-live="polite">Updated 21:42, 31 Aug</span>
+          <div class="status-indicator" aria-label="System status: Active">
+            <span class="status-dot" aria-hidden="true"></span>
+            Prototype Active
+          </div>
+        </div>
+      </header>
 
-  <!-- ================================================================
+      <!-- ================================================================
        SCENARIO SIMULATOR BAR (shown on all sections)
        ================================================================ -->
-  <div style="padding:16px 32px 0;" id="simBarWrap">
-    <div class="simulator-bar" role="toolbar" aria-label="Scenario simulator">
-      <span class="simulator-label">Run Scenario:</span>
-      <button class="simulator-btn" data-scenario="normal"   aria-label="Simulate normal day">☀️ Normal Day</button>
-      <button class="simulator-btn" data-scenario="building" aria-label="Simulate pollution building">📈 Pollution Building</button>
-      <button class="simulator-btn sim-active" data-scenario="severe"   aria-label="Simulate severe episode">🔴 Severe Episode</button>
-      <button class="simulator-btn" data-scenario="recovery" aria-label="Simulate recovery">↑ Recovery</button>
-      <span class="simulator-badge" aria-label="Simulation mode active">⚡ Simulation Mode</span>
-    </div>
-  </div>
+      <div style="padding:16px 32px 0;" id="simBarWrap">
+        <div class="simulator-bar" role="toolbar" aria-label="Scenario simulator">
+          <span class="simulator-label">Run Scenario:</span>
+          <button class="simulator-btn" data-scenario="normal" aria-label="Simulate normal day">☀️ Normal Day</button>
+          <button class="simulator-btn" data-scenario="building" aria-label="Simulate pollution building">📈 Pollution
+            Building</button>
+          <button class="simulator-btn sim-active" data-scenario="severe" aria-label="Simulate severe episode">🔴 Severe
+            Episode</button>
+          <button class="simulator-btn" data-scenario="recovery" aria-label="Simulate recovery">↑ Recovery</button>
+          <span class="simulator-badge" aria-label="Simulation mode active">⚡ Simulation Mode</span>
+        </div>
+      </div>
 
-  <!-- ================================================================
+      <!-- ================================================================
        SECTION 1 — OVERVIEW
        ================================================================ -->
-  <section id="section-overview" class="page-section active" aria-label="Overview">
+      <section id="section-overview" class="page-section active" aria-label="Overview">
 
-    <!-- Hero Banner -->
-    <div class="hero-banner animate-in">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:20px;">
-        <div style="flex:1;min-width:280px;">
-          <h1 class="hero-question">Is a severe pollution episode forming?</h1>
-          <p class="hero-answer">AeroShield combines air-quality trends with atmospheric conditions to detect when a dangerous pollution episode may be forming — not just how polluted the air is right now.</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <span class="tag-prototype">Prototype Data</span>
-            <span class="tag-prototype" style="background:rgba(34,211,192,0.1);border-color:rgba(34,211,192,0.2);color:var(--teal-400);">Demo Simulation</span>
-          </div>
-        </div>
-        <div class="aqi-gauge-wrap" aria-label="Current AQI gauge">
-          <svg class="aqi-gauge-svg" id="aqiGaugeSvg" viewBox="0 0 200 125" role="img" aria-label="AQI gauge showing current value"></svg>
-          <div class="gauge-label">Current AQI</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- KPI Cards Row -->
-    <div class="grid-4 animate-in" style="margin-bottom:24px;" role="region" aria-label="Key performance indicators">
-
-      <div class="kpi-card" style="--accent-color:#4db8ff;" aria-label="Current AQI">
-        <div class="kpi-label">Current AQI</div>
-        <div class="kpi-value"><span id="kpiAqi">287</span></div>
-        <div id="kpiAqiStatus" class="kpi-status status-poor" role="status">Poor</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">PM2.5: <span id="kpiPm25" style="font-family:'JetBrains Mono',monospace;">192</span> µg/m³</div>
-      </div>
-
-      <div class="kpi-card" style="--accent-color:#ef4444;" aria-label="24-hour forecast AQI">
-        <div class="kpi-label">24H Forecast</div>
-        <div class="kpi-value"><span id="kpiAqi24h">420</span></div>
-        <div id="kpiForecastStatus" class="kpi-status status-severe" role="status">Very High</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Prototype estimate</div>
-      </div>
-
-      <div class="kpi-card" style="--accent-color:#fb923c;" aria-label="Episode risk probability">
-        <div class="kpi-label">Episode Risk</div>
-        <div class="kpi-value"><span id="kpiRisk">87</span><span class="kpi-unit">%</span></div>
-        <div id="kpiRiskStatus" class="kpi-status status-high" role="status">High</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Severe episode likely</div>
-      </div>
-
-      <div class="kpi-card" style="--accent-color:#22d3c0;" aria-label="Pollution Trapping Index">
-        <div class="kpi-label">PTI</div>
-        <div class="kpi-value"><span id="kpiPti">86</span><span class="kpi-unit">/100</span></div>
-        <div id="kpiPtiStatus" class="kpi-status status-trapping" role="status">High Trapping</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Atmospheric conditions</div>
-      </div>
-    </div>
-
-    <!-- Main Warning Card -->
-    <div class="warning-card animate-in" id="warningCard" role="alert" aria-live="polite">
-      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red-500),var(--orange-500));border-radius:var(--r-xl) var(--r-xl) 0 0;"></div>
-      <div class="warning-header">
-        <div class="warning-icon" aria-hidden="true">⚠</div>
-        <div>
-          <div class="warning-title" id="warningTitle">⚠ SEVERE POLLUTION EPISODE LIKELY</div>
-          <div class="warning-subtitle">Physics-informed early warning • Prototype estimate</div>
-        </div>
-      </div>
-      <div class="warning-stats">
-        <div>
-          <div class="w-stat-label">Episode Probability</div>
-          <div class="w-stat-value"><span id="wStatPct">87</span>%</div>
-        </div>
-        <div>
-          <div class="w-stat-label">Expected Onset</div>
-          <div class="w-stat-value">18–24 hrs</div>
-        </div>
-        <div>
-          <div class="w-stat-label">Expected Peak AQI</div>
-          <div class="w-stat-value">400–440</div>
-        </div>
-        <div>
-          <div class="w-stat-label">Expected Duration</div>
-          <div class="w-stat-value">~36 hrs</div>
-        </div>
-      </div>
-      <div class="warning-explanation" id="warningExplanation">
-        Atmospheric conditions are becoming favorable for pollution accumulation. Low PBL height and weak winds are reducing ventilation near the surface.
-      </div>
-      <div class="warning-actions">
-        <button class="btn btn-danger" data-open-modal="whyModal" aria-label="Open explanation of why risk is high">Why is risk high?</button>
-        <button class="btn btn-ghost" data-scroll-to="explainability" aria-label="View explanation details">View why →</button>
-        <button class="btn btn-secondary" data-scroll-to="episode" aria-label="View episode risk details">Episode Details</button>
-      </div>
-    </div>
-
-    <!-- Early Warning Panel (Overview summary) -->
-    <div class="early-warning-card animate-in" aria-label="Early warning summary">
-      <div class="ew-header">
-        <div class="ew-badge" id="ewBadge" role="status"><span>🔴 HIGH RISK</span></div>
-        <div class="ew-title">Early Warning Center</div>
-      </div>
-      <div class="ew-grid">
-        <div>
-          <div class="ew-item-label">Expected Onset</div>
-          <div class="ew-item-value">Tomorrow morning</div>
-          <div class="ew-confidence">18–24 hours from now</div>
-        </div>
-        <div>
-          <div class="ew-item-label">Expected Peak</div>
-          <div class="ew-item-value">400–440 AQI</div>
-          <div class="ew-confidence"><span id="ewRiskPct">87</span>% probability</div>
-        </div>
-        <div>
-          <div class="ew-item-label">Confidence</div>
-          <div class="ew-item-value" style="font-size:13px;">Prototype estimate</div>
-          <div class="ew-confidence">Demo simulation only</div>
-        </div>
-      </div>
-      <div class="ew-actions">
-        <button class="btn btn-primary btn-sm" id="ewViewForecast" aria-label="View full forecast">View Forecast</button>
-        <button class="btn btn-ghost btn-sm" id="ewWhyBtn" data-open-modal="whyModal" aria-label="Why is this happening?">Why?</button>
-        <button class="btn btn-secondary btn-sm" id="prepareBtn" aria-label="Show preparation tips">Prepare</button>
-      </div>
-      <div class="prepare-box" id="prepareBox" role="region" aria-label="Preparation tips">
-        <div class="prepare-title">🛡️ General Awareness Tips</div>
-        <ul class="prepare-list">
-          <li>Consider reducing prolonged outdoor exposure during severe pollution periods.</li>
-          <li>Follow official local air-quality advisories from government agencies.</li>
-          <li>Sensitive groups (elderly, children, those with respiratory conditions) may wish to limit outdoor time.</li>
-          <li>Check official forecasts and local news for confirmed advisories.</li>
-          <li style="font-style:italic;color:var(--text-muted);">Note: AeroShield is a prototype. Always follow official advisories. This is not medical advice.</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Map Section (Overview) -->
-    <div class="section-header mt-24">
-      <div class="section-tag" aria-hidden="true">Regional View</div>
-      <h2 class="section-title">Delhi-NCR Monitor Map</h2>
-      <p class="section-subtitle">Click a station to see local AQI and risk details. Demo regional visualization — not real-time data.</p>
-    </div>
-
-    <div class="map-layout animate-in">
-      <div class="map-card" aria-label="Delhi-NCR monitoring stations map">
-        <div class="map-header">
-          <div style="display:flex;align-items:center;gap:10px;">
-            <div class="map-title">Delhi-NCR Region</div>
-            <span class="map-demo-badge" aria-label="Demo data">Live Geographic Map</span>
-          </div>
-          <div class="map-controls-group">
-            <button class="map-ctrl-btn active" id="toggleHeatmapBtn" title="Toggle AQI Heatmap Layer">
-              <span class="ctrl-icon">🔥</span> Heatmap
-            </button>
-            <button class="map-ctrl-btn active" id="toggleStationsBtn" title="Toggle Station Markers">
-              <span class="ctrl-icon">📍</span> Stations
-            </button>
-          </div>
-        </div>
-        <div class="map-wrapper-relative">
-          <div id="delhiMap" class="leaflet-map-container" role="region" aria-label="Interactive Leaflet map of Delhi-NCR air quality"></div>
-          <!-- In-map AQI Legend -->
-          <div class="map-aqi-legend" aria-label="AQI Color Legend">
-            <div class="legend-scale-title">AQI Intensity</div>
-            <div class="legend-gradient-bar"></div>
-            <div class="legend-scale-labels">
-              <span>0 (Good)</span>
-              <span>200 (Poor)</span>
-              <span>500 (Severe)</span>
+        <!-- Hero Banner -->
+        <div class="hero-banner animate-in">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:20px;">
+            <div style="flex:1;min-width:280px;">
+              <h1 class="hero-question">Is a severe pollution episode forming?</h1>
+              <p class="hero-answer">AeroShield combines air-quality trends with atmospheric conditions to detect when a
+                dangerous pollution episode may be forming — not just how polluted the air is right now.</p>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <span class="tag-prototype">Prototype Data</span>
+                <span class="tag-prototype"
+                  style="background:rgba(34,211,192,0.1);border-color:rgba(34,211,192,0.2);color:var(--teal-400);">Demo
+                  Simulation</span>
+              </div>
+            </div>
+            <div class="aqi-gauge-wrap" aria-label="Current AQI gauge">
+              <svg class="aqi-gauge-svg" id="aqiGaugeSvg" viewBox="0 0 200 125" role="img"
+                aria-label="AQI gauge showing current value"></svg>
+              <div class="gauge-label">Current AQI</div>
             </div>
           </div>
         </div>
-      </div>
 
-      <aside class="map-info-panel" aria-label="Station details panel">
-        <div class="info-panel-header">
-          <div class="info-panel-title" id="infoPanelTitle">Delhi (ITO)</div>
-          <div class="info-panel-sub">Click station to update</div>
+        <!-- KPI Cards Row -->
+        <div class="grid-4 animate-in" style="margin-bottom:24px;" role="region"
+          aria-label="Key performance indicators">
+
+          <div class="kpi-card" style="--accent-color:#4db8ff;" aria-label="Current AQI">
+            <div class="kpi-label">Current AQI</div>
+            <div class="kpi-value"><span id="kpiAqi">287</span></div>
+            <div id="kpiAqiStatus" class="kpi-status status-poor" role="status">Poor</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">PM2.5: <span id="kpiPm25"
+                style="font-family:'JetBrains Mono',monospace;">192</span> µg/m³</div>
+          </div>
+
+          <div class="kpi-card" style="--accent-color:#ef4444;" aria-label="24-hour forecast AQI">
+            <div class="kpi-label">24H Forecast</div>
+            <div class="kpi-value"><span id="kpiAqi24h">420</span></div>
+            <div id="kpiForecastStatus" class="kpi-status status-severe" role="status">Very High</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Prototype estimate</div>
+          </div>
+
+          <div class="kpi-card" style="--accent-color:#fb923c;" aria-label="Episode risk probability">
+            <div class="kpi-label">Episode Risk</div>
+            <div class="kpi-value"><span id="kpiRisk">87</span><span class="kpi-unit">%</span></div>
+            <div id="kpiRiskStatus" class="kpi-status status-high" role="status">High</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Severe episode likely</div>
+          </div>
+
+          <div class="kpi-card" style="--accent-color:#22d3c0;" aria-label="Pollution Trapping Index">
+            <div class="kpi-label">PTI</div>
+            <div class="kpi-value"><span id="kpiPti">86</span><span class="kpi-unit">/100</span></div>
+            <div id="kpiPtiStatus" class="kpi-status status-trapping" role="status">High Trapping</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Atmospheric conditions</div>
+          </div>
         </div>
-        <div class="info-panel-body">
-          <div class="info-metric">
-            <div class="info-metric-label">Current AQI</div>
-            <div class="info-metric-value" id="infoAqi">287</div>
-            <div id="infoAqiStatus" class="kpi-status status-poor" style="margin-top:4px;" role="status">Poor</div>
+
+        <!-- Main Warning Card -->
+        <div class="warning-card animate-in" id="warningCard" role="alert" aria-live="polite">
+          <div
+            style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red-500),var(--orange-500));border-radius:var(--r-xl) var(--r-xl) 0 0;">
           </div>
-          <div class="info-metric">
-            <div class="info-metric-label">24H Predicted AQI</div>
-            <div class="info-metric-value" id="infoAqi24h">420</div>
-            <div class="info-metric-sub">Prototype estimate</div>
+          <div class="warning-header">
+            <div class="warning-icon" aria-hidden="true">⚠</div>
+            <div>
+              <div class="warning-title" id="warningTitle">⚠ SEVERE POLLUTION EPISODE LIKELY</div>
+              <div class="warning-subtitle">Physics-informed early warning • Prototype estimate</div>
+            </div>
           </div>
-          <div class="info-metric">
-            <div class="info-metric-label">PTI</div>
-            <div class="info-metric-value" id="infoPti">86</div>
-            <div class="info-metric-sub">/100 — High trapping</div>
+          <div class="warning-stats">
+            <div>
+              <div class="w-stat-label">Episode Probability</div>
+              <div class="w-stat-value"><span id="wStatPct">87</span>%</div>
+            </div>
+            <div>
+              <div class="w-stat-label">Expected Onset</div>
+              <div class="w-stat-value">18–24 hrs</div>
+            </div>
+            <div>
+              <div class="w-stat-label">Expected Peak AQI</div>
+              <div class="w-stat-value">400–440</div>
+            </div>
+            <div>
+              <div class="w-stat-label">Expected Duration</div>
+              <div class="w-stat-value">~36 hrs</div>
+            </div>
           </div>
-          <div class="info-metric">
-            <div class="info-metric-label">Episode Risk</div>
-            <div class="info-metric-value" id="infoRisk">87%</div>
-            <div class="info-metric-sub">Severe episode likely</div>
+          <div class="warning-explanation" id="warningExplanation">
+            Atmospheric conditions are becoming favorable for pollution accumulation. Low PBL height and weak winds are
+            reducing ventilation near the surface.
           </div>
-          <div style="margin-top:16px;padding:10px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.2);border-radius:8px;font-size:10px;color:var(--text-muted);font-style:italic;">
-            <!-- All values are prototype demo data. Not real-time readings. -->
+          <div class="warning-actions">
+            <button class="btn btn-danger" data-open-modal="whyModal"
+              aria-label="Open explanation of why risk is high">Why is risk high?</button>
+            <button class="btn btn-ghost" data-scroll-to="explainability" aria-label="View explanation details">View why
+              →</button>
+            <button class="btn btn-secondary" data-scroll-to="episode" aria-label="View episode risk details">Episode
+              Details</button>
           </div>
         </div>
-      </aside>
-    </div>
 
-  </section>
+        <!-- Early Warning Panel (Overview summary) -->
+        <div class="early-warning-card animate-in" aria-label="Early warning summary">
+          <div class="ew-header">
+            <div class="ew-badge" id="ewBadge" role="status"><span>🔴 HIGH RISK</span></div>
+            <div class="ew-title">Early Warning Center</div>
+          </div>
+          <div class="ew-grid">
+            <div>
+              <div class="ew-item-label">Expected Onset</div>
+              <div class="ew-item-value">Tomorrow morning</div>
+              <div class="ew-confidence">18–24 hours from now</div>
+            </div>
+            <div>
+              <div class="ew-item-label">Expected Peak</div>
+              <div class="ew-item-value">400–440 AQI</div>
+              <div class="ew-confidence"><span id="ewRiskPct">87</span>% probability</div>
+            </div>
+            <div>
+              <div class="ew-item-label">Confidence</div>
+              <div class="ew-item-value" style="font-size:13px;">Prototype estimate</div>
+              <div class="ew-confidence">Demo simulation only</div>
+            </div>
+          </div>
+          <div class="ew-actions">
+            <button class="btn btn-primary btn-sm" id="ewViewForecast" aria-label="View full forecast">View
+              Forecast</button>
+            <button class="btn btn-ghost btn-sm" id="ewWhyBtn" data-open-modal="whyModal"
+              aria-label="Why is this happening?">Why?</button>
+            <button class="btn btn-secondary btn-sm" id="prepareBtn" aria-label="Show preparation tips">Prepare</button>
+          </div>
+          <div class="prepare-box" id="prepareBox" role="region" aria-label="Preparation tips">
+            <div class="prepare-title">🛡️ General Awareness Tips</div>
+            <ul class="prepare-list">
+              <li>Consider reducing prolonged outdoor exposure during severe pollution periods.</li>
+              <li>Follow official local air-quality advisories from government agencies.</li>
+              <li>Sensitive groups (elderly, children, those with respiratory conditions) may wish to limit outdoor
+                time.</li>
+              <li>Check official forecasts and local news for confirmed advisories.</li>
+              <li style="font-style:italic;color:var(--text-muted);">Note: AeroShield is a prototype. Always follow
+                official advisories. This is not medical advice.</li>
+            </ul>
+          </div>
+        </div>
 
-  <!-- ================================================================
+        <!-- Map Section (Overview) -->
+        <div class="section-header mt-24">
+          <div class="section-tag" aria-hidden="true">Regional View</div>
+          <h2 class="section-title">Delhi-NCR Monitor Map</h2>
+          <p class="section-subtitle">Click a station to see local AQI and risk details. Demo regional visualization —
+            not real-time data.</p>
+        </div>
+
+        <div class="map-layout animate-in">
+          <div class="map-card" aria-label="Delhi-NCR monitoring stations map">
+            <div class="map-header">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="map-title">Delhi-NCR Region</div>
+                <span class="map-demo-badge" aria-label="Demo data">Live Geographic Map</span>
+              </div>
+              <div class="map-controls-group">
+                <button class="map-ctrl-btn active" id="toggleHeatmapBtn" title="Toggle AQI Heatmap Layer">
+                  <span class="ctrl-icon">🔥</span> Heatmap
+                </button>
+                <button class="map-ctrl-btn active" id="toggleStationsBtn" title="Toggle Station Markers">
+                  <span class="ctrl-icon">📍</span> Stations
+                </button>
+              </div>
+            </div>
+            <div class="map-wrapper-relative">
+              <div id="delhiMap" class="leaflet-map-container" role="region"
+                aria-label="Interactive Leaflet map of Delhi-NCR air quality"></div>
+              <!-- In-map AQI Legend -->
+              <div class="map-aqi-legend" aria-label="AQI Color Legend">
+                <div class="legend-scale-title">AQI Intensity</div>
+                <div class="legend-gradient-bar"></div>
+                <div class="legend-scale-labels">
+                  <span>0 (Good)</span>
+                  <span>200 (Poor)</span>
+                  <span>500 (Severe)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="map-info-panel" aria-label="Station details panel">
+            <div class="info-panel-header">
+              <div class="info-panel-title" id="infoPanelTitle">Delhi (ITO)</div>
+              <div class="info-panel-sub">Click station to update</div>
+            </div>
+            <div class="info-panel-body">
+              <div class="info-metric">
+                <div class="info-metric-label">Current AQI</div>
+                <div class="info-metric-value" id="infoAqi">287</div>
+                <div id="infoAqiStatus" class="kpi-status status-poor" style="margin-top:4px;" role="status">Poor</div>
+              </div>
+              <div class="info-metric">
+                <div class="info-metric-label">24H Predicted AQI</div>
+                <div class="info-metric-value" id="infoAqi24h">420</div>
+                <div class="info-metric-sub">Prototype estimate</div>
+              </div>
+              <div class="info-metric">
+                <div class="info-metric-label">PTI</div>
+                <div class="info-metric-value" id="infoPti">86</div>
+                <div class="info-metric-sub">/100 — High trapping</div>
+              </div>
+              <div class="info-metric">
+                <div class="info-metric-label">Episode Risk</div>
+                <div class="info-metric-value" id="infoRisk">87%</div>
+                <div class="info-metric-sub">Severe episode likely</div>
+              </div>
+              <div
+                style="margin-top:16px;padding:10px;background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.2);border-radius:8px;font-size:10px;color:var(--text-muted);font-style:italic;">
+                <!-- All values are prototype demo data. Not real-time readings. -->
+              </div>
+            </div>
+          </aside>
+        </div>
+
+      </section>
+
+      <!-- ================================================================
        SECTION 2 — FORECAST
        ================================================================ -->
-  <section id="section-forecast" class="page-section" aria-label="Forecast">
+      <section id="section-forecast" class="page-section" aria-label="Forecast">
 
-    <div class="section-header">
-      <div class="section-tag" aria-hidden="true">Forecast</div>
-      <h2 class="section-title">PM2.5 / AQI Forecast</h2>
-      <p class="section-subtitle">Historical observed data (solid) and physics-informed model forecast (dashed). Prototype simulation values.</p>
-    </div>
-
-    <!-- Forecast Chart -->
-    <div class="chart-card animate-in">
-      <div class="chart-header">
-        <div>
-          <div class="chart-title">AQI Forecast Timeline</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Hover over chart for details • <span class="tag-prototype">Prototype data</span></div>
+        <div class="section-header">
+          <div class="section-tag" aria-hidden="true">Forecast</div>
+          <h2 class="section-title">PM2.5 / AQI Forecast</h2>
+          <p class="section-subtitle">Historical observed data (solid) and physics-informed model forecast (dashed).
+            Prototype simulation values.</p>
         </div>
-        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-          <div class="chart-legend" aria-label="Chart legend">
-            <div class="legend-item">
-              <div class="legend-line" style="background:#4db8ff;"></div>
-              Observed
+
+        <!-- Forecast Chart -->
+        <div class="chart-card animate-in">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">AQI Forecast Timeline</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Hover over chart for details • <span
+                  class="tag-prototype">Prototype data</span></div>
             </div>
-            <div class="legend-item">
-              <div class="legend-line legend-dashed" style="border-color:#22d3c0;"></div>
-              Forecast
+            <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+              <div class="chart-legend" aria-label="Chart legend">
+                <div class="legend-item">
+                  <div class="legend-line" style="background:#4db8ff;"></div>
+                  Observed
+                </div>
+                <div class="legend-item">
+                  <div class="legend-line legend-dashed" style="border-color:#22d3c0;"></div>
+                  Forecast
+                </div>
+                <div class="legend-item">
+                  <div class="legend-line" style="background:#f97316;opacity:0.6;"></div>
+                  Warning (AQI 200)
+                </div>
+              </div>
+              <div class="chart-toggle-group" role="group" aria-label="Forecast time range">
+                <button class="chart-toggle" data-hours="6" aria-label="6 hour forecast">6H</button>
+                <button class="chart-toggle" data-hours="12" aria-label="12 hour forecast">12H</button>
+                <button class="chart-toggle active" data-hours="24" aria-label="24 hour forecast">24H</button>
+                <button class="chart-toggle" data-hours="48" aria-label="48 hour forecast">48H</button>
+              </div>
             </div>
-            <div class="legend-item">
-              <div class="legend-line" style="background:#f97316;opacity:0.6;"></div>
-              Warning (AQI 200)
+          </div>
+          <div class="chart-container">
+            <canvas id="forecastCanvas" role="img" aria-label="AQI forecast line chart"></canvas>
+            <div class="chart-tooltip" id="chartTooltip" role="tooltip" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <!-- PTI Section (also in Forecast page) -->
+        <div class="section-header mt-24">
+          <div class="section-tag" aria-hidden="true">Conceptual Innovation</div>
+          <h2 class="section-title">Pollution Trapping Index</h2>
+          <p class="section-subtitle">How favorable is the atmosphere for pollution to build up? PTI aggregates multiple
+            atmospheric factors into a single interpretable score.</p>
+        </div>
+
+        <div class="pti-layout animate-in">
+
+          <div class="pti-gauge-card" aria-label="Pollution Trapping Index gauge">
+            <div
+              style="font-size:11px;color:var(--teal-400);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">
+              Pollution Trapping Index</div>
+            <svg class="pti-gauge-svg" id="ptiGaugeSvg" viewBox="0 0 240 145" role="img"
+              aria-label="PTI semi-circular gauge"></svg>
+            <div class="pti-value-display">
+              <span class="pti-number" id="ptiNumber">86</span><span class="pti-max">/100</span>
             </div>
+            <div class="pti-status-label" id="ptiStatusLabel" role="status">HIGH TRAPPING</div>
+            <div class="pti-subtitle">Atmosphere favorable for accumulation</div>
+            <div class="pti-disclaimer" style="margin-top:12px;">Illustrative prototype values. PTI is a conceptual
+              index for this demo.</div>
           </div>
-          <div class="chart-toggle-group" role="group" aria-label="Forecast time range">
-            <button class="chart-toggle" data-hours="6"  aria-label="6 hour forecast">6H</button>
-            <button class="chart-toggle" data-hours="12" aria-label="12 hour forecast">12H</button>
-            <button class="chart-toggle active" data-hours="24" aria-label="24 hour forecast">24H</button>
-            <button class="chart-toggle" data-hours="48" aria-label="48 hour forecast">48H</button>
-          </div>
-        </div>
-      </div>
-      <div class="chart-container">
-        <canvas id="forecastCanvas" role="img" aria-label="AQI forecast line chart"></canvas>
-        <div class="chart-tooltip" id="chartTooltip" role="tooltip" aria-live="polite"></div>
-      </div>
-    </div>
 
-    <!-- PTI Section (also in Forecast page) -->
-    <div class="section-header mt-24">
-      <div class="section-tag" aria-hidden="true">Conceptual Innovation</div>
-      <h2 class="section-title">Pollution Trapping Index</h2>
-      <p class="section-subtitle">How favorable is the atmosphere for pollution to build up? PTI aggregates multiple atmospheric factors into a single interpretable score.</p>
-    </div>
+          <div class="factors-card" aria-label="PTI contributing factors">
+            <div style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:16px;">Contributing
+              Atmospheric Factors</div>
 
-    <div class="pti-layout animate-in">
+            <div class="factor-row">
+              <div class="factor-header">
+                <span class="factor-name">🌫️ PBL Height</span>
+                <span class="factor-value" id="factorPblVal">520 m</span>
+              </div>
+              <div class="factor-bar-bg">
+                <div class="factor-bar-fill" id="factorPblBar"
+                  style="width:0%;background:linear-gradient(90deg,#ef4444,#fb923c);"></div>
+              </div>
+              <div class="factor-influence">
+                <span class="influence-label">Low boundary layer traps pollution</span>
+                <span class="influence-tag influence-high" id="factorPblInf">High influence</span>
+              </div>
+            </div>
 
-      <div class="pti-gauge-card" aria-label="Pollution Trapping Index gauge">
-        <div style="font-size:11px;color:var(--teal-400);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;">Pollution Trapping Index</div>
-        <svg class="pti-gauge-svg" id="ptiGaugeSvg" viewBox="0 0 240 145" role="img" aria-label="PTI semi-circular gauge"></svg>
-        <div class="pti-value-display">
-          <span class="pti-number" id="ptiNumber">86</span><span class="pti-max">/100</span>
-        </div>
-        <div class="pti-status-label" id="ptiStatusLabel" role="status">HIGH TRAPPING</div>
-        <div class="pti-subtitle">Atmosphere favorable for accumulation</div>
-        <div class="pti-disclaimer" style="margin-top:12px;">Illustrative prototype values. PTI is a conceptual index for this demo.</div>
-      </div>
+            <div class="factor-row">
+              <div class="factor-header">
+                <span class="factor-name">💨 Wind Speed</span>
+                <span class="factor-value" id="factorWindVal">1.3 m/s</span>
+              </div>
+              <div class="factor-bar-bg">
+                <div class="factor-bar-fill" id="factorWindBar"
+                  style="width:0%;background:linear-gradient(90deg,#ef4444,#fb923c);"></div>
+              </div>
+              <div class="factor-influence">
+                <span class="influence-label">Low wind reduces pollutant dispersal</span>
+                <span class="influence-tag influence-high" id="factorWindInf">High influence</span>
+              </div>
+            </div>
 
-      <div class="factors-card" aria-label="PTI contributing factors">
-        <div style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:16px;">Contributing Atmospheric Factors</div>
+            <div class="factor-row">
+              <div class="factor-header">
+                <span class="factor-name">🌡️ Inversion Layer</span>
+                <span class="factor-value" id="factorInvVal">Detected</span>
+              </div>
+              <div class="factor-bar-bg">
+                <div class="factor-bar-fill" id="factorInvBar"
+                  style="width:0%;background:linear-gradient(90deg,#fb923c,#facc15);"></div>
+              </div>
+              <div class="factor-influence">
+                <span class="influence-label">Stable air suppresses vertical mixing</span>
+                <span class="influence-tag influence-high" id="factorInvInf">High influence</span>
+              </div>
+            </div>
 
-        <div class="factor-row">
-          <div class="factor-header">
-            <span class="factor-name">🌫️ PBL Height</span>
-            <span class="factor-value" id="factorPblVal">520 m</span>
-          </div>
-          <div class="factor-bar-bg">
-            <div class="factor-bar-fill" id="factorPblBar" style="width:0%;background:linear-gradient(90deg,#ef4444,#fb923c);"></div>
-          </div>
-          <div class="factor-influence">
-            <span class="influence-label">Low boundary layer traps pollution</span>
-            <span class="influence-tag influence-high" id="factorPblInf">High influence</span>
-          </div>
-        </div>
+            <div class="factor-row">
+              <div class="factor-header">
+                <span class="factor-name">💧 Humidity</span>
+                <span class="factor-value" id="factorHumVal">78%</span>
+              </div>
+              <div class="factor-bar-bg">
+                <div class="factor-bar-fill" id="factorHumBar"
+                  style="width:0%;background:linear-gradient(90deg,#facc15,#22c55e);"></div>
+              </div>
+              <div class="factor-influence">
+                <span class="influence-label">High humidity can increase particle size</span>
+                <span class="influence-tag influence-mod" id="factorHumInf">Moderate influence</span>
+              </div>
+            </div>
 
-        <div class="factor-row">
-          <div class="factor-header">
-            <span class="factor-name">💨 Wind Speed</span>
-            <span class="factor-value" id="factorWindVal">1.3 m/s</span>
-          </div>
-          <div class="factor-bar-bg">
-            <div class="factor-bar-fill" id="factorWindBar" style="width:0%;background:linear-gradient(90deg,#ef4444,#fb923c);"></div>
-          </div>
-          <div class="factor-influence">
-            <span class="influence-label">Low wind reduces pollutant dispersal</span>
-            <span class="influence-tag influence-high" id="factorWindInf">High influence</span>
-          </div>
-        </div>
+            <div class="factor-row">
+              <div class="factor-header">
+                <span class="factor-name">📈 PM2.5 Trend</span>
+                <span class="factor-value" id="factorTrendVal">Rising</span>
+              </div>
+              <div class="factor-bar-bg">
+                <div class="factor-bar-fill" id="factorTrendBar"
+                  style="width:0%;background:linear-gradient(90deg,#ef4444,#fb923c);"></div>
+              </div>
+              <div class="factor-influence">
+                <span class="influence-label">Pre-existing pollution building</span>
+                <span class="influence-tag influence-high" id="factorTrendInf">High influence</span>
+              </div>
+            </div>
 
-        <div class="factor-row">
-          <div class="factor-header">
-            <span class="factor-name">🌡️ Inversion Layer</span>
-            <span class="factor-value" id="factorInvVal">Detected</span>
-          </div>
-          <div class="factor-bar-bg">
-            <div class="factor-bar-fill" id="factorInvBar" style="width:0%;background:linear-gradient(90deg,#fb923c,#facc15);"></div>
-          </div>
-          <div class="factor-influence">
-            <span class="influence-label">Stable air suppresses vertical mixing</span>
-            <span class="influence-tag influence-high" id="factorInvInf">High influence</span>
-          </div>
-        </div>
-
-        <div class="factor-row">
-          <div class="factor-header">
-            <span class="factor-name">💧 Humidity</span>
-            <span class="factor-value" id="factorHumVal">78%</span>
-          </div>
-          <div class="factor-bar-bg">
-            <div class="factor-bar-fill" id="factorHumBar" style="width:0%;background:linear-gradient(90deg,#facc15,#22c55e);"></div>
-          </div>
-          <div class="factor-influence">
-            <span class="influence-label">High humidity can increase particle size</span>
-            <span class="influence-tag influence-mod" id="factorHumInf">Moderate influence</span>
+            <div class="pti-disclaimer">⚠ Illustrative prototype values. These bars represent conceptual factor
+              contributions — not outputs of a validated model.</div>
           </div>
         </div>
 
-        <div class="factor-row">
-          <div class="factor-header">
-            <span class="factor-name">📈 PM2.5 Trend</span>
-            <span class="factor-value" id="factorTrendVal">Rising</span>
-          </div>
-          <div class="factor-bar-bg">
-            <div class="factor-bar-fill" id="factorTrendBar" style="width:0%;background:linear-gradient(90deg,#ef4444,#fb923c);"></div>
-          </div>
-          <div class="factor-influence">
-            <span class="influence-label">Pre-existing pollution building</span>
-            <span class="influence-tag influence-high" id="factorTrendInf">High influence</span>
-          </div>
-        </div>
+      </section>
 
-        <div class="pti-disclaimer">⚠ Illustrative prototype values. These bars represent conceptual factor contributions — not outputs of a validated model.</div>
-      </div>
-    </div>
-
-  </section>
-
-  <!-- ================================================================
+      <!-- ================================================================
        SECTION 3 — EPISODE RISK
        ================================================================ -->
-  <section id="section-episode" class="page-section" aria-label="Pollution Episode Risk">
+      <section id="section-episode" class="page-section" aria-label="Pollution Episode Risk">
 
-    <div class="section-header">
-      <div class="section-tag" aria-hidden="true">Episode Risk</div>
-      <h2 class="section-title">Pollution Episode Risk Assessment</h2>
-      <p class="section-subtitle">AeroShield attempts to predict not just current AQI, but whether a dangerous pollution episode is forming, and when it may peak and recover.</p>
-    </div>
-
-    <div class="episode-layout animate-in">
-
-      <!-- Probability Ring -->
-      <div class="episode-probability-card" aria-label="Episode probability">
-        <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:12px;">Severe Episode Probability</div>
-        <div class="probability-ring" role="img" aria-label="Ring chart showing episode probability">
-          <svg class="prob-svg" id="probSvg" viewBox="0 0 180 180"></svg>
-          <div class="prob-text">
-            <div class="prob-number" id="probNumber">87</div>
-            <div class="prob-label">% probability</div>
-          </div>
+        <div class="section-header">
+          <div class="section-tag" aria-hidden="true">Episode Risk</div>
+          <h2 class="section-title">Pollution Episode Risk Assessment</h2>
+          <p class="section-subtitle">AeroShield attempts to predict not just current AQI, but whether a dangerous
+            pollution episode is forming, and when it may peak and recover.</p>
         </div>
-        <div class="episode-details">
-          <div class="ep-detail-row">
-            <span class="ep-detail-label">Expected Onset</span>
-            <span class="ep-detail-value">18–24 hrs</span>
-          </div>
-          <div class="ep-detail-row">
-            <span class="ep-detail-label">Peak AQI</span>
-            <span class="ep-detail-value">400–440</span>
-          </div>
-          <div class="ep-detail-row">
-            <span class="ep-detail-label">Duration</span>
-            <span class="ep-detail-value">30–40 hrs</span>
-          </div>
-          <div class="ep-detail-row">
-            <span class="ep-detail-label">Confidence</span>
-            <span class="ep-detail-value" style="font-size:11px;color:var(--text-muted);">Prototype est.</span>
-          </div>
-        </div>
-        <div style="margin-top:16px;font-size:10px;color:var(--text-muted);font-style:italic;padding:8px;background:var(--bg-base);border-radius:8px;border:1px solid var(--border-subtle);">
-          Demo simulation only. Not a validated prediction.
-        </div>
-      </div>
 
-      <!-- Timeline Card -->
-      <div class="episode-timeline-card">
-        <div style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:20px;">Episode Lifecycle Timeline</div>
+        <div class="episode-layout animate-in">
 
-        <div class="episode-stages">
-          <div class="stage-item">
-            <div class="stage-dot stage-normal" aria-label="Normal stage">✓</div>
-            <div class="stage-content">
-              <div class="stage-name">Normal Conditions</div>
-              <div class="stage-desc">Adequate PBL height, moderate winds, normal PM2.5</div>
-              <div class="stage-time">Current AQI: 100–150 • AQI Status: Moderate</div>
+          <!-- Probability Ring -->
+          <div class="episode-probability-card" aria-label="Episode probability">
+            <div
+              style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:12px;">
+              Severe Episode Probability</div>
+            <div class="probability-ring" role="img" aria-label="Ring chart showing episode probability">
+              <svg class="prob-svg" id="probSvg" viewBox="0 0 180 180"></svg>
+              <div class="prob-text">
+                <div class="prob-number" id="probNumber">87</div>
+                <div class="prob-label">% probability</div>
+              </div>
+            </div>
+            <div class="episode-details">
+              <div class="ep-detail-row">
+                <span class="ep-detail-label">Expected Onset</span>
+                <span class="ep-detail-value">18–24 hrs</span>
+              </div>
+              <div class="ep-detail-row">
+                <span class="ep-detail-label">Peak AQI</span>
+                <span class="ep-detail-value">400–440</span>
+              </div>
+              <div class="ep-detail-row">
+                <span class="ep-detail-label">Duration</span>
+                <span class="ep-detail-value">30–40 hrs</span>
+              </div>
+              <div class="ep-detail-row">
+                <span class="ep-detail-label">Confidence</span>
+                <span class="ep-detail-value" style="font-size:11px;color:var(--text-muted);">Prototype est.</span>
+              </div>
+            </div>
+            <div
+              style="margin-top:16px;font-size:10px;color:var(--text-muted);font-style:italic;padding:8px;background:var(--bg-base);border-radius:8px;border:1px solid var(--border-subtle);">
+              Demo simulation only. Not a validated prediction.
             </div>
           </div>
 
-          <div class="stage-item">
-            <div class="stage-dot stage-building stage-current" aria-label="Building stage (current)" aria-current="step">↗</div>
-            <div class="stage-content">
-              <div class="stage-name">Building ← Current</div>
-              <div class="stage-desc">PBL declining, winds weakening, PM2.5 rising. Conditions becoming unfavorable.</div>
-              <div class="stage-time">Now • AQI: 220–300</div>
-            </div>
-          </div>
+          <!-- Timeline Card -->
+          <div class="episode-timeline-card">
+            <div style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:20px;">Episode Lifecycle
+              Timeline</div>
 
-          <div class="stage-item">
-            <div class="stage-dot stage-high" aria-label="High risk stage">!</div>
-            <div class="stage-content">
-              <div class="stage-name">High Risk</div>
-              <div class="stage-desc">Severe atmospheric trapping underway. Rapid PM2.5 accumulation expected.</div>
-              <div class="stage-time">Expected: +6–12 hrs • AQI: 300–380</div>
-            </div>
-          </div>
+            <div class="episode-stages">
+              <div class="stage-item">
+                <div class="stage-dot stage-normal" aria-label="Normal stage">✓</div>
+                <div class="stage-content">
+                  <div class="stage-name">Normal Conditions</div>
+                  <div class="stage-desc">Adequate PBL height, moderate winds, normal PM2.5</div>
+                  <div class="stage-time">Current AQI: 100–150 • AQI Status: Moderate</div>
+                </div>
+              </div>
 
-          <div class="stage-item">
-            <div class="stage-dot stage-severe" aria-label="Severe episode stage">⚠</div>
-            <div class="stage-content">
-              <div class="stage-name">Severe Episode</div>
-              <div class="stage-desc">Peak pollution accumulation. Very poor visibility. High health concern.</div>
-              <div class="stage-time">Expected: +18–24 hrs • AQI: 400–440</div>
-            </div>
-          </div>
+              <div class="stage-item">
+                <div class="stage-dot stage-building stage-current" aria-label="Building stage (current)"
+                  aria-current="step">↗</div>
+                <div class="stage-content">
+                  <div class="stage-name">Building ← Current</div>
+                  <div class="stage-desc">PBL declining, winds weakening, PM2.5 rising. Conditions becoming unfavorable.
+                  </div>
+                  <div class="stage-time">Now • AQI: 220–300</div>
+                </div>
+              </div>
 
-          <div class="stage-item">
-            <div class="stage-dot stage-recovery" aria-label="Recovery stage">↓</div>
-            <div class="stage-content">
-              <div class="stage-name">Recovery</div>
-              <div class="stage-desc">Conditions improve as PBL rises or wind strengthens. Pollution begins dispersing.</div>
-              <div class="stage-time">Expected: +36–48 hrs</div>
+              <div class="stage-item">
+                <div class="stage-dot stage-high" aria-label="High risk stage">!</div>
+                <div class="stage-content">
+                  <div class="stage-name">High Risk</div>
+                  <div class="stage-desc">Severe atmospheric trapping underway. Rapid PM2.5 accumulation expected.</div>
+                  <div class="stage-time">Expected: +6–12 hrs • AQI: 300–380</div>
+                </div>
+              </div>
+
+              <div class="stage-item">
+                <div class="stage-dot stage-severe" aria-label="Severe episode stage">⚠</div>
+                <div class="stage-content">
+                  <div class="stage-name">Severe Episode</div>
+                  <div class="stage-desc">Peak pollution accumulation. Very poor visibility. High health concern.</div>
+                  <div class="stage-time">Expected: +18–24 hrs • AQI: 400–440</div>
+                </div>
+              </div>
+
+              <div class="stage-item">
+                <div class="stage-dot stage-recovery" aria-label="Recovery stage">↓</div>
+                <div class="stage-content">
+                  <div class="stage-name">Recovery</div>
+                  <div class="stage-desc">Conditions improve as PBL rises or wind strengthens. Pollution begins
+                    dispersing.</div>
+                  <div class="stage-time">Expected: +36–48 hrs</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Historical episode chart -->
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:8px;">Recent Episode
+                History (Demo Data)</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px;">Past 14 days — illustrative
+                prototype data</div>
+              <div class="history-canvas-wrap">
+                <canvas id="episodeHistoryCanvas" role="img" aria-label="Historical episode chart"></canvas>
+              </div>
+              <div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;">
+                <div class="legend-item">
+                  <div class="legend-line" style="background:#ef4444;"></div>Detected Episode
+                </div>
+                <div class="legend-item">
+                  <div class="legend-line legend-dashed" style="border-color:#22d3c0;"></div>Predicted Episode
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Historical episode chart -->
-        <div>
-          <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:8px;">Recent Episode History (Demo Data)</div>
-          <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px;">Past 14 days — illustrative prototype data</div>
-          <div class="history-canvas-wrap">
-            <canvas id="episodeHistoryCanvas" role="img" aria-label="Historical episode chart"></canvas>
-          </div>
-          <div style="display:flex;gap:16px;margin-top:10px;flex-wrap:wrap;">
-            <div class="legend-item"><div class="legend-line" style="background:#ef4444;"></div>Detected Episode</div>
-            <div class="legend-item"><div class="legend-line legend-dashed" style="border-color:#22d3c0;"></div>Predicted Episode</div>
-          </div>
-        </div>
-      </div>
-    </div>
+      </section>
 
-  </section>
-
-  <!-- ================================================================
+      <!-- ================================================================
        SECTION 4 — ATMOSPHERIC CONDITIONS
        ================================================================ -->
-  <section id="section-atmospheric" class="page-section" aria-label="Atmospheric Conditions">
+      <section id="section-atmospheric" class="page-section" aria-label="Atmospheric Conditions">
 
-    <div class="section-header">
-      <div class="section-tag" aria-hidden="true">Atmospheric Conditions</div>
-      <h2 class="section-title">Atmospheric Conditions</h2>
-      <p class="section-subtitle">Current meteorological and atmospheric parameters used in the PTI calculation and episode risk model. All values are prototype simulation data.</p>
-    </div>
-
-    <!-- Atmo Cards -->
-    <div class="atmo-grid animate-in" role="region" aria-label="Atmospheric parameter cards">
-
-      <div class="atmo-card">
-        <span class="atmo-icon" aria-hidden="true">🌫️</span>
-        <div class="atmo-label">PBL Height</div>
-        <div class="atmo-value"><span id="atmoValPbl">520</span><span class="atmo-unit-sm"> m</span></div>
-        <div class="atmo-trend trend-down" role="status">↓ Falling</div>
-        <div class="atmo-note">Potentially unfavorable</div>
-      </div>
-
-      <div class="atmo-card">
-        <span class="atmo-icon" aria-hidden="true">💨</span>
-        <div class="atmo-label">Wind Speed</div>
-        <div class="atmo-value"><span id="atmoValWind">1.3</span><span class="atmo-unit-sm"> m/s</span></div>
-        <div class="atmo-trend trend-down" role="status">↓ Weakening</div>
-        <div class="atmo-note">Low dispersal potential</div>
-      </div>
-
-      <div class="atmo-card">
-        <span class="atmo-icon" aria-hidden="true">🧭</span>
-        <div class="atmo-label">Wind Direction</div>
-        <div class="atmo-value" id="atmoValWindDir">NW</div>
-        <div class="atmo-trend trend-stable" role="status">→ Stable</div>
-        <div class="atmo-note">From northwest</div>
-      </div>
-
-      <div class="atmo-card">
-        <span class="atmo-icon" aria-hidden="true">🌡️</span>
-        <div class="atmo-label">Temperature</div>
-        <div class="atmo-value"><span id="atmoValTemp">18</span><span class="atmo-unit-sm">°C</span></div>
-        <div class="atmo-trend trend-down" role="status">↓ Cooling</div>
-        <div class="atmo-note">Cooler nights can strengthen inversion</div>
-      </div>
-
-      <div class="atmo-card">
-        <span class="atmo-icon" aria-hidden="true">💧</span>
-        <div class="atmo-label">Humidity</div>
-        <div class="atmo-value"><span id="atmoValHumidity">78</span><span class="atmo-unit-sm">%</span></div>
-        <div class="atmo-trend trend-up" role="status">↑ Rising</div>
-        <div class="atmo-note">Moderate influence on PM2.5</div>
-      </div>
-
-      <div class="atmo-card">
-        <span class="atmo-icon" aria-hidden="true">⏱️</span>
-        <div class="atmo-label">Pressure</div>
-        <div class="atmo-value"><span id="atmoValPressure">1011</span><span class="atmo-unit-sm"> hPa</span></div>
-        <div class="atmo-trend trend-down" role="status">↓ Falling</div>
-        <div class="atmo-note">Slightly below normal</div>
-      </div>
-
-      <div class="atmo-card">
-        <span class="atmo-icon" aria-hidden="true">🌀</span>
-        <div class="atmo-label">Atm. Stability</div>
-        <div class="atmo-value" style="font-size:18px;" id="atmoValStability">Strong</div>
-        <div class="atmo-trend trend-down" role="status">↑ Strengthening</div>
-        <div class="atmo-note">Suppresses vertical mixing</div>
-      </div>
-
-      <div class="atmo-card" style="border-color:rgba(239,68,68,0.3);">
-        <span class="atmo-icon" aria-hidden="true">⚠</span>
-        <div class="atmo-label">Inversion Layer</div>
-        <div class="atmo-value" style="font-size:18px;color:var(--red-400);" id="atmoValInversion">Detected</div>
-        <div class="atmo-trend trend-down" role="status">⚠ Active</div>
-        <div class="atmo-note">Key factor in pollution trapping</div>
-      </div>
-
-    </div>
-
-    <!-- PBL Visualization -->
-    <div class="pbl-viz-section animate-in" role="region" aria-label="PBL educational visualization">
-      <div class="pbl-viz-title">Why is the atmosphere trapping pollution?</div>
-      <p class="pbl-viz-sub">The Planetary Boundary Layer (PBL) is the lower part of the atmosphere directly influenced by the Earth's surface. A lower PBL reduces the volume available for pollution to mix and disperse.</p>
-      <div class="pbl-viz-grid">
-        <div class="pbl-viz-panel">
-          <div class="pbl-panel-label pbl-good-label">
-            <span>✅</span> Normal / Higher PBL — Better Dispersion
-          </div>
-          <div class="pbl-svg-wrap" aria-label="Diagram showing high PBL with good pollution dispersion">
-            <svg id="pblGoodSvg" xmlns="http://www.w3.org/2000/svg"></svg>
-          </div>
-          <p class="pbl-caption">When the PBL is high, polluted air can mix vertically over a larger volume, diluting PM2.5 concentrations near the surface.</p>
+        <div class="section-header">
+          <div class="section-tag" aria-hidden="true">Atmospheric Conditions</div>
+          <h2 class="section-title">Atmospheric Conditions</h2>
+          <p class="section-subtitle">Current meteorological and atmospheric parameters used in the PTI calculation and
+            episode risk model. All values are prototype simulation data.</p>
         </div>
-        <div class="pbl-viz-panel">
-          <div class="pbl-panel-label pbl-bad-label">
-            <span>⚠</span> Low PBL + Inversion — Pollution Accumulates
+
+        <!-- Atmo Cards -->
+        <div class="atmo-grid animate-in" role="region" aria-label="Atmospheric parameter cards">
+
+          <div class="atmo-card">
+            <span class="atmo-icon" aria-hidden="true">🌫️</span>
+            <div class="atmo-label">PBL Height</div>
+            <div class="atmo-value"><span id="atmoValPbl">520</span><span class="atmo-unit-sm"> m</span></div>
+            <div class="atmo-trend trend-down" role="status">↓ Falling</div>
+            <div class="atmo-note">Potentially unfavorable</div>
           </div>
-          <div class="pbl-svg-wrap" aria-label="Diagram showing low PBL with pollution trapped near ground">
-            <svg id="pblBadSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+
+          <div class="atmo-card">
+            <span class="atmo-icon" aria-hidden="true">💨</span>
+            <div class="atmo-label">Wind Speed</div>
+            <div class="atmo-value"><span id="atmoValWind">1.3</span><span class="atmo-unit-sm"> m/s</span></div>
+            <div class="atmo-trend trend-down" role="status">↓ Weakening</div>
+            <div class="atmo-note">Low dispersal potential</div>
           </div>
-          <p class="pbl-caption">When the PBL is low — especially with a temperature inversion — PM2.5 is trapped in a shallow layer near the ground, causing rapid concentration increases.</p>
+
+          <div class="atmo-card">
+            <span class="atmo-icon" aria-hidden="true">🧭</span>
+            <div class="atmo-label">Wind Direction</div>
+            <div class="atmo-value" id="atmoValWindDir">NW</div>
+            <div class="atmo-trend trend-stable" role="status">→ Stable</div>
+            <div class="atmo-note">From northwest</div>
+          </div>
+
+          <div class="atmo-card">
+            <span class="atmo-icon" aria-hidden="true">🌡️</span>
+            <div class="atmo-label">Temperature</div>
+            <div class="atmo-value"><span id="atmoValTemp">18</span><span class="atmo-unit-sm">°C</span></div>
+            <div class="atmo-trend trend-down" role="status">↓ Cooling</div>
+            <div class="atmo-note">Cooler nights can strengthen inversion</div>
+          </div>
+
+          <div class="atmo-card">
+            <span class="atmo-icon" aria-hidden="true">💧</span>
+            <div class="atmo-label">Humidity</div>
+            <div class="atmo-value"><span id="atmoValHumidity">78</span><span class="atmo-unit-sm">%</span></div>
+            <div class="atmo-trend trend-up" role="status">↑ Rising</div>
+            <div class="atmo-note">Moderate influence on PM2.5</div>
+          </div>
+
+          <div class="atmo-card">
+            <span class="atmo-icon" aria-hidden="true">⏱️</span>
+            <div class="atmo-label">Pressure</div>
+            <div class="atmo-value"><span id="atmoValPressure">1011</span><span class="atmo-unit-sm"> hPa</span></div>
+            <div class="atmo-trend trend-down" role="status">↓ Falling</div>
+            <div class="atmo-note">Slightly below normal</div>
+          </div>
+
+          <div class="atmo-card">
+            <span class="atmo-icon" aria-hidden="true">🌀</span>
+            <div class="atmo-label">Atm. Stability</div>
+            <div class="atmo-value" style="font-size:18px;" id="atmoValStability">Strong</div>
+            <div class="atmo-trend trend-down" role="status">↑ Strengthening</div>
+            <div class="atmo-note">Suppresses vertical mixing</div>
+          </div>
+
+          <div class="atmo-card" style="border-color:rgba(239,68,68,0.3);">
+            <span class="atmo-icon" aria-hidden="true">⚠</span>
+            <div class="atmo-label">Inversion Layer</div>
+            <div class="atmo-value" style="font-size:18px;color:var(--red-400);" id="atmoValInversion">Detected</div>
+            <div class="atmo-trend trend-down" role="status">⚠ Active</div>
+            <div class="atmo-note">Key factor in pollution trapping</div>
+          </div>
+
         </div>
-      </div>
-    </div>
 
-  </section>
+        <!-- PBL Visualization -->
+        <div class="pbl-viz-section animate-in" role="region" aria-label="PBL educational visualization">
+          <div class="pbl-viz-title">Why is the atmosphere trapping pollution?</div>
+          <p class="pbl-viz-sub">The Planetary Boundary Layer (PBL) is the lower part of the atmosphere directly
+            influenced by the Earth's surface. A lower PBL reduces the volume available for pollution to mix and
+            disperse.</p>
+          <div class="pbl-viz-grid">
+            <div class="pbl-viz-panel">
+              <div class="pbl-panel-label pbl-good-label">
+                <span>✅</span> Normal / Higher PBL — Better Dispersion
+              </div>
+              <div class="pbl-svg-wrap" aria-label="Diagram showing high PBL with good pollution dispersion">
+                <svg id="pblGoodSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+              </div>
+              <p class="pbl-caption">When the PBL is high, polluted air can mix vertically over a larger volume,
+                diluting PM2.5 concentrations near the surface.</p>
+            </div>
+            <div class="pbl-viz-panel">
+              <div class="pbl-panel-label pbl-bad-label">
+                <span>⚠</span> Low PBL + Inversion — Pollution Accumulates
+              </div>
+              <div class="pbl-svg-wrap" aria-label="Diagram showing low PBL with pollution trapped near ground">
+                <svg id="pblBadSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+              </div>
+              <p class="pbl-caption">When the PBL is low — especially with a temperature inversion — PM2.5 is trapped in
+                a shallow layer near the ground, causing rapid concentration increases.</p>
+            </div>
+          </div>
+        </div>
 
-  <!-- ================================================================
+      </section>
+
+      <!-- ================================================================
        SECTION 5 — EXPLAINABILITY
        ================================================================ -->
-  <section id="section-explainability" class="page-section" aria-label="Explainability">
+      <section id="section-explainability" class="page-section" aria-label="Explainability">
 
-    <div class="section-header">
-      <div class="section-tag" aria-hidden="true">Explainability</div>
-      <h2 class="section-title">Why is AeroShield warning us?</h2>
-      <p class="section-subtitle">Main factors influencing this prediction. AeroShield is designed to be explainable — not a black box.</p>
-    </div>
+        <div class="section-header">
+          <div class="section-tag" aria-hidden="true">Explainability</div>
+          <h2 class="section-title">Why is AeroShield warning us?</h2>
+          <p class="section-subtitle">Main factors influencing this prediction. AeroShield is designed to be explainable
+            — not a black box.</p>
+        </div>
 
-    <div class="explain-layout animate-in">
+        <div class="explain-layout animate-in">
 
-      <!-- SHAP-style Chart -->
-      <div class="shap-chart-card" role="region" aria-label="Feature contribution chart">
-        <div style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Main Factors Influencing This Prediction</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-bottom:20px;">Illustrative SHAP-style explanation — conceptual demo, not a trained model output</div>
+          <!-- SHAP-style Chart -->
+          <div class="shap-chart-card" role="region" aria-label="Feature contribution chart">
+            <div style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Main Factors
+              Influencing This Prediction</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-bottom:20px;">Illustrative SHAP-style explanation
+              — conceptual demo, not a trained model output</div>
 
-        <div class="shap-row">
-          <div class="shap-header">
-            <span class="shap-feature" id="shapFeat0">Low PBL Height</span>
-            <span class="shap-pct" id="shapPct0">43%</span>
+            <div class="shap-row">
+              <div class="shap-header">
+                <span class="shap-feature" id="shapFeat0">Low PBL Height</span>
+                <span class="shap-pct" id="shapPct0">43%</span>
+              </div>
+              <div class="shap-bar-bg">
+                <div class="shap-bar-fill" id="shapBar0" style="width:0%;" role="progressbar" aria-valuenow="43"
+                  aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+
+            <div class="shap-row">
+              <div class="shap-header">
+                <span class="shap-feature" id="shapFeat1">Weak Wind Speed</span>
+                <span class="shap-pct" id="shapPct1">28%</span>
+              </div>
+              <div class="shap-bar-bg">
+                <div class="shap-bar-fill" id="shapBar1" style="width:0%;" role="progressbar" aria-valuenow="28"
+                  aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+
+            <div class="shap-row">
+              <div class="shap-header">
+                <span class="shap-feature" id="shapFeat2">Rising PM2.5 Trend</span>
+                <span class="shap-pct" id="shapPct2">18%</span>
+              </div>
+              <div class="shap-bar-bg">
+                <div class="shap-bar-fill" id="shapBar2" style="width:0%;" role="progressbar" aria-valuenow="18"
+                  aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+
+            <div class="shap-row">
+              <div class="shap-header">
+                <span class="shap-feature" id="shapFeat3">Strong Inversion</span>
+                <span class="shap-pct" id="shapPct3">11%</span>
+              </div>
+              <div class="shap-bar-bg">
+                <div class="shap-bar-fill" id="shapBar3" style="width:0%;" role="progressbar" aria-valuenow="11"
+                  aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+            </div>
+
+            <div class="shap-disclaimer">⚠ These percentages are illustrative prototype values to demonstrate the
+              concept of explainable AI. They do not represent outputs from a trained or validated machine learning
+              model.</div>
+
+            <div style="margin-top:16px;">
+              <button class="btn btn-ghost" data-open-modal="whyModal" aria-label="Open detailed explanation modal">
+                🔍 Why is the risk high? (Detailed)
+              </button>
+            </div>
           </div>
-          <div class="shap-bar-bg">
-            <div class="shap-bar-fill" id="shapBar0" style="width:0%;" role="progressbar" aria-valuenow="43" aria-valuemin="0" aria-valuemax="100"></div>
+
+          <!-- Narrative Explanation -->
+          <div class="explain-text-card" role="region" aria-label="Natural language explanation">
+            <div style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:16px;">Natural Language
+              Explanation</div>
+
+            <div class="explain-narrative" id="explainNarrative" aria-live="polite">
+              The risk is high mainly because the boundary layer is becoming shallower and wind speed is low. These
+              conditions reduce atmospheric ventilation and can allow PM2.5 to accumulate rapidly.
+            </div>
+
+            <div class="explain-factors">
+              <div class="explain-factor-item">
+                <div class="ef-name">🌫️ Low PBL Height</div>
+                <div class="ef-desc">There is less vertical space for polluted air to mix. A shallow boundary layer
+                  concentrates pollutants near the ground level where people breathe.</div>
+              </div>
+              <div class="explain-factor-item">
+                <div class="ef-name">💨 Weak Wind</div>
+                <div class="ef-desc">Polluted air is not being carried away quickly. Low wind speeds reduce horizontal
+                  transport of pollutants out of the region.</div>
+              </div>
+              <div class="explain-factor-item">
+                <div class="ef-name">🌡️ Inversion Layer</div>
+                <div class="ef-desc">Stable warm air above acts as a lid, suppressing normal vertical mixing and
+                  preventing pollutants from rising and dispersing.</div>
+              </div>
+              <div class="explain-factor-item">
+                <div class="ef-name">📈 Rising PM2.5</div>
+                <div class="ef-desc">Pollution is already building before the expected severe episode begins, suggesting
+                  that sources are active and conditions are deteriorating.</div>
+              </div>
+            </div>
+
+            <div
+              style="margin-top:16px;padding:12px;background:rgba(34,211,192,0.06);border-radius:var(--r-md);border:1px solid rgba(34,211,192,0.15);">
+              <div style="font-size:11px;font-weight:700;color:var(--teal-400);margin-bottom:4px;">Why AeroShield is
+                different</div>
+              <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">Most air-quality dashboards tell
+                you how polluted the air is right now. AeroShield tries to tell you <em>when</em> a dangerous episode is
+                forming, <em>how severe</em> it may become, <em>how long</em> it may persist, and <em>why</em>.</div>
+            </div>
           </div>
         </div>
 
-        <div class="shap-row">
-          <div class="shap-header">
-            <span class="shap-feature" id="shapFeat1">Weak Wind Speed</span>
-            <span class="shap-pct" id="shapPct1">28%</span>
+        <!-- Model Comparison -->
+        <div class="section-header mt-24">
+          <div class="section-tag" aria-hidden="true">Model Architecture</div>
+          <h2 class="section-title">Does atmospheric information improve forecasting?</h2>
+          <p class="section-subtitle">Conceptual comparison of a baseline AQI model versus the AeroShield
+            physics-informed approach.</p>
+        </div>
+
+        <div class="model-comparison-layout animate-in">
+          <div class="model-card" role="region" aria-label="Baseline model description">
+            <div class="model-badge badge-baseline">Baseline</div>
+            <div class="model-card-title">Standard AQI Forecast</div>
+            <div class="model-flow">
+              <div class="flow-input">
+                <span class="flow-tag">PM2.5</span>
+                <span class="flow-tag">Basic Weather</span>
+              </div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-model">XGBoost / Standard ML</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-output">
+                <span class="output-tag">AQI Forecast</span>
+              </div>
+            </div>
+            <div style="margin-top:16px;font-size:12px;color:var(--text-secondary);line-height:1.6;">
+              A baseline model predicts AQI from historical pollution data and basic weather. It does not capture
+              atmospheric dynamics that determine whether pollutants will accumulate or disperse.
+            </div>
           </div>
-          <div class="shap-bar-bg">
-            <div class="shap-bar-fill" id="shapBar1" style="width:0%;" role="progressbar" aria-valuenow="28" aria-valuemin="0" aria-valuemax="100"></div>
+
+          <div class="model-card model-aeroshield" role="region" aria-label="AeroShield model description">
+            <div class="model-badge badge-aeroshield">AeroShield</div>
+            <div class="model-card-title">Physics-Informed Approach</div>
+            <div class="model-flow">
+              <div class="flow-input">
+                <span class="flow-tag">PM2.5</span>
+                <span class="flow-tag">Weather</span>
+                <span class="flow-tag">PBL</span>
+                <span class="flow-tag">Wind</span>
+                <span class="flow-tag">Inversion</span>
+                <span class="flow-tag tag-pti">★ PTI</span>
+              </div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-model aeroshield-model">Physics-Informed ML + SHAP</div>
+              <div class="flow-arrow">↓</div>
+              <div class="flow-output">
+                <span class="output-tag">AQI Forecast</span>
+                <span class="output-tag">Episode Risk</span>
+                <span class="output-tag">Duration</span>
+                <span class="output-tag">Explanation</span>
+              </div>
+            </div>
+            <div style="margin-top:16px;font-size:12px;color:var(--text-secondary);line-height:1.6;">
+              AeroShield adds PBL height, atmospheric stability, inversion data, and the novel Pollution Trapping Index
+              (PTI) as features — enabling it to predict episode onset, severity, and duration.
+            </div>
           </div>
         </div>
 
-        <div class="shap-row">
-          <div class="shap-header">
-            <span class="shap-feature" id="shapFeat2">Rising PM2.5 Trend</span>
-            <span class="shap-pct" id="shapPct2">18%</span>
-          </div>
-          <div class="shap-bar-bg">
-            <div class="shap-bar-fill" id="shapBar2" style="width:0%;" role="progressbar" aria-valuenow="18" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-        </div>
-
-        <div class="shap-row">
-          <div class="shap-header">
-            <span class="shap-feature" id="shapFeat3">Strong Inversion</span>
-            <span class="shap-pct" id="shapPct3">11%</span>
-          </div>
-          <div class="shap-bar-bg">
-            <div class="shap-bar-fill" id="shapBar3" style="width:0%;" role="progressbar" aria-valuenow="11" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-        </div>
-
-        <div class="shap-disclaimer">⚠ These percentages are illustrative prototype values to demonstrate the concept of explainable AI. They do not represent outputs from a trained or validated machine learning model.</div>
-
-        <div style="margin-top:16px;">
-          <button class="btn btn-ghost" data-open-modal="whyModal" aria-label="Open detailed explanation modal">
-            🔍 Why is the risk high? (Detailed)
-          </button>
-        </div>
-      </div>
-
-      <!-- Narrative Explanation -->
-      <div class="explain-text-card" role="region" aria-label="Natural language explanation">
-        <div style="font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:16px;">Natural Language Explanation</div>
-
-        <div class="explain-narrative" id="explainNarrative" aria-live="polite">
-          The risk is high mainly because the boundary layer is becoming shallower and wind speed is low. These conditions reduce atmospheric ventilation and can allow PM2.5 to accumulate rapidly.
-        </div>
-
-        <div class="explain-factors">
-          <div class="explain-factor-item">
-            <div class="ef-name">🌫️ Low PBL Height</div>
-            <div class="ef-desc">There is less vertical space for polluted air to mix. A shallow boundary layer concentrates pollutants near the ground level where people breathe.</div>
-          </div>
-          <div class="explain-factor-item">
-            <div class="ef-name">💨 Weak Wind</div>
-            <div class="ef-desc">Polluted air is not being carried away quickly. Low wind speeds reduce horizontal transport of pollutants out of the region.</div>
-          </div>
-          <div class="explain-factor-item">
-            <div class="ef-name">🌡️ Inversion Layer</div>
-            <div class="ef-desc">Stable warm air above acts as a lid, suppressing normal vertical mixing and preventing pollutants from rising and dispersing.</div>
-          </div>
-          <div class="explain-factor-item">
-            <div class="ef-name">📈 Rising PM2.5</div>
-            <div class="ef-desc">Pollution is already building before the expected severe episode begins, suggesting that sources are active and conditions are deteriorating.</div>
-          </div>
-        </div>
-
-        <div style="margin-top:16px;padding:12px;background:rgba(34,211,192,0.06);border-radius:var(--r-md);border:1px solid rgba(34,211,192,0.15);">
-          <div style="font-size:11px;font-weight:700;color:var(--teal-400);margin-bottom:4px;">Why AeroShield is different</div>
-          <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;">Most air-quality dashboards tell you how polluted the air is right now. AeroShield tries to tell you <em>when</em> a dangerous episode is forming, <em>how severe</em> it may become, <em>how long</em> it may persist, and <em>why</em>.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Model Comparison -->
-    <div class="section-header mt-24">
-      <div class="section-tag" aria-hidden="true">Model Architecture</div>
-      <h2 class="section-title">Does atmospheric information improve forecasting?</h2>
-      <p class="section-subtitle">Conceptual comparison of a baseline AQI model versus the AeroShield physics-informed approach.</p>
-    </div>
-
-    <div class="model-comparison-layout animate-in">
-      <div class="model-card" role="region" aria-label="Baseline model description">
-        <div class="model-badge badge-baseline">Baseline</div>
-        <div class="model-card-title">Standard AQI Forecast</div>
-        <div class="model-flow">
-          <div class="flow-input">
-            <span class="flow-tag">PM2.5</span>
-            <span class="flow-tag">Basic Weather</span>
-          </div>
-          <div class="flow-arrow">↓</div>
-          <div class="flow-model">XGBoost / Standard ML</div>
-          <div class="flow-arrow">↓</div>
-          <div class="flow-output">
-            <span class="output-tag">AQI Forecast</span>
+        <!-- Comparison Table -->
+        <div class="comparison-table-wrap animate-in">
+          <table class="comp-table" aria-label="Model performance comparison">
+            <thead>
+              <tr>
+                <th scope="col">Metric</th>
+                <th scope="col">Baseline Model</th>
+                <th scope="col">AeroShield (Proposed)</th>
+                <th scope="col">Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>MAE (AQI)</td>
+                <td><span class="tbd-badge">TBD</span></td>
+                <td><span class="tbd-badge aeroshield-tbd">TBD</span></td>
+                <td>Pending full training data</td>
+              </tr>
+              <tr>
+                <td>RMSE (AQI)</td>
+                <td><span class="tbd-badge">TBD</span></td>
+                <td><span class="tbd-badge aeroshield-tbd">TBD</span></td>
+                <td>Pending full training data</td>
+              </tr>
+              <tr>
+                <td>Episode Recall</td>
+                <td><span class="tbd-badge">TBD</span></td>
+                <td><span class="tbd-badge aeroshield-tbd">TBD</span></td>
+                <td>Key metric for AeroShield</td>
+              </tr>
+              <tr>
+                <td>Episode Precision</td>
+                <td><span class="tbd-badge">TBD</span></td>
+                <td><span class="tbd-badge aeroshield-tbd">TBD</span></td>
+                <td>Reduces false alarms</td>
+              </tr>
+              <tr>
+                <td>Duration Prediction</td>
+                <td style="color:var(--text-muted);font-style:italic;">Not available</td>
+                <td><span class="tbd-badge aeroshield-tbd">Prototype concept</span></td>
+                <td>Novel capability</td>
+              </tr>
+              <tr>
+                <td>Explainability</td>
+                <td style="color:var(--text-muted);">Limited</td>
+                <td><span class="tbd-badge aeroshield-tbd">SHAP-style (demo)</span></td>
+                <td>Conceptual for this prototype</td>
+              </tr>
+            </tbody>
+          </table>
+          <div
+            style="padding:12px 20px;font-size:10px;color:var(--text-muted);font-style:italic;border-top:1px solid var(--border-subtle);">
+            All performance values are TBD — this prototype has not been trained on real data. Results will be updated
+            after full model development and validation.
           </div>
         </div>
-        <div style="margin-top:16px;font-size:12px;color:var(--text-secondary);line-height:1.6;">
-          A baseline model predicts AQI from historical pollution data and basic weather. It does not capture atmospheric dynamics that determine whether pollutants will accumulate or disperse.
-        </div>
-      </div>
 
-      <div class="model-card model-aeroshield" role="region" aria-label="AeroShield model description">
-        <div class="model-badge badge-aeroshield">AeroShield</div>
-        <div class="model-card-title">Physics-Informed Approach</div>
-        <div class="model-flow">
-          <div class="flow-input">
-            <span class="flow-tag">PM2.5</span>
-            <span class="flow-tag">Weather</span>
-            <span class="flow-tag">PBL</span>
-            <span class="flow-tag">Wind</span>
-            <span class="flow-tag">Inversion</span>
-            <span class="flow-tag tag-pti">★ PTI</span>
-          </div>
-          <div class="flow-arrow">↓</div>
-          <div class="flow-model aeroshield-model">Physics-Informed ML + SHAP</div>
-          <div class="flow-arrow">↓</div>
-          <div class="flow-output">
-            <span class="output-tag">AQI Forecast</span>
-            <span class="output-tag">Episode Risk</span>
-            <span class="output-tag">Duration</span>
-            <span class="output-tag">Explanation</span>
-          </div>
-        </div>
-        <div style="margin-top:16px;font-size:12px;color:var(--text-secondary);line-height:1.6;">
-          AeroShield adds PBL height, atmospheric stability, inversion data, and the novel Pollution Trapping Index (PTI) as features — enabling it to predict episode onset, severity, and duration.
-        </div>
-      </div>
-    </div>
+      </section>
 
-    <!-- Comparison Table -->
-    <div class="comparison-table-wrap animate-in">
-      <table class="comp-table" aria-label="Model performance comparison">
-        <thead>
-          <tr>
-            <th scope="col">Metric</th>
-            <th scope="col">Baseline Model</th>
-            <th scope="col">AeroShield (Proposed)</th>
-            <th scope="col">Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>MAE (AQI)</td>
-            <td><span class="tbd-badge">TBD</span></td>
-            <td><span class="tbd-badge aeroshield-tbd">TBD</span></td>
-            <td>Pending full training data</td>
-          </tr>
-          <tr>
-            <td>RMSE (AQI)</td>
-            <td><span class="tbd-badge">TBD</span></td>
-            <td><span class="tbd-badge aeroshield-tbd">TBD</span></td>
-            <td>Pending full training data</td>
-          </tr>
-          <tr>
-            <td>Episode Recall</td>
-            <td><span class="tbd-badge">TBD</span></td>
-            <td><span class="tbd-badge aeroshield-tbd">TBD</span></td>
-            <td>Key metric for AeroShield</td>
-          </tr>
-          <tr>
-            <td>Episode Precision</td>
-            <td><span class="tbd-badge">TBD</span></td>
-            <td><span class="tbd-badge aeroshield-tbd">TBD</span></td>
-            <td>Reduces false alarms</td>
-          </tr>
-          <tr>
-            <td>Duration Prediction</td>
-            <td style="color:var(--text-muted);font-style:italic;">Not available</td>
-            <td><span class="tbd-badge aeroshield-tbd">Prototype concept</span></td>
-            <td>Novel capability</td>
-          </tr>
-          <tr>
-            <td>Explainability</td>
-            <td style="color:var(--text-muted);">Limited</td>
-            <td><span class="tbd-badge aeroshield-tbd">SHAP-style (demo)</span></td>
-            <td>Conceptual for this prototype</td>
-          </tr>
-        </tbody>
-      </table>
-      <div style="padding:12px 20px;font-size:10px;color:var(--text-muted);font-style:italic;border-top:1px solid var(--border-subtle);">
-        All performance values are TBD — this prototype has not been trained on real data. Results will be updated after full model development and validation.
-      </div>
-    </div>
-
-  </section>
-
-  <!-- ================================================================
+      <!-- ================================================================
        SECTION 6 — ABOUT
        ================================================================ -->
-  <section id="section-about" class="page-section" aria-label="About AeroShield">
+      <section id="section-about" class="page-section" aria-label="About AeroShield">
 
-    <div class="section-header">
-      <div class="section-tag" aria-hidden="true">About</div>
-      <h2 class="section-title">AeroShield</h2>
-      <p class="section-subtitle">From AQI reporting to pollution episode early warning.</p>
-    </div>
+        <div class="section-header">
+          <div class="section-tag" aria-hidden="true">About</div>
+          <h2 class="section-title">AeroShield</h2>
+          <p class="section-subtitle">From AQI reporting to pollution episode early warning.</p>
+        </div>
 
-    <blockquote class="about-quote animate-in">
-      "Most air-quality dashboards tell you how polluted the air is. AeroShield tries to tell you <em>when</em> a dangerous pollution episode is forming, how severe it may become, how long it may persist, and why."
-    </blockquote>
+        <blockquote class="about-quote animate-in">
+          "Most air-quality dashboards tell you how polluted the air is. AeroShield tries to tell you <em>when</em> a
+          dangerous pollution episode is forming, how severe it may become, how long it may persist, and why."
+        </blockquote>
 
-    <!-- Concept Flow -->
-    <div class="about-story-cards animate-in" role="region" aria-label="Project concept journey">
-      <div class="story-card">
-        <div class="story-num">01</div>
-        <div class="story-title">Current AQI</div>
-        <div class="story-desc">What is the pollution level right now?</div>
-      </div>
-      <div class="story-card">
-        <div class="story-num">02</div>
-        <div class="story-title">Future Risk</div>
-        <div class="story-desc">When could a severe episode form?</div>
-      </div>
-      <div class="story-card">
-        <div class="story-num">03</div>
-        <div class="story-title">Atmosphere</div>
-        <div class="story-desc">Why are conditions trapping pollution?</div>
-      </div>
-      <div class="story-card">
-        <div class="story-num">04</div>
-        <div class="story-title">Why?</div>
-        <div class="story-desc">Explainable predictions, not a black box</div>
-      </div>
-      <div class="story-card">
-        <div class="story-num">05</div>
-        <div class="story-title">Action</div>
-        <div class="story-desc">Early warning enables timely decisions</div>
-      </div>
-    </div>
-
-    <!-- Process Flow -->
-    <div class="section-header mt-24">
-      <div class="section-tag" aria-hidden="true">System Design</div>
-      <h2 class="section-title">How AeroShield Works</h2>
-      <p class="section-subtitle">From raw data to early warning — a physics-informed intelligence pipeline. PTI is the conceptual innovation layer.</p>
-    </div>
-
-    <div class="process-flow-wrap animate-in" role="region" aria-label="AeroShield process flow diagram">
-      <div class="process-flow">
-
-        <div class="flow-step" data-tooltip="Raw pollution and weather data collection">
-          <div class="flow-step-box">
-            <div class="flow-step-icon">📡</div>
-            <div>DATA</div>
+        <!-- Concept Flow -->
+        <div class="about-story-cards animate-in" role="region" aria-label="Project concept journey">
+          <div class="story-card">
+            <div class="story-num">01</div>
+            <div class="story-title">Current AQI</div>
+            <div class="story-desc">What is the pollution level right now?</div>
           </div>
-          <div class="flow-step-label">Data Input</div>
-        </div>
-
-        <div class="flow-arrow-connector" aria-hidden="true">→</div>
-
-        <div class="flow-step" data-tooltip="Data cleaning, quality control, gap filling">
-          <div class="flow-step-box">
-            <div class="flow-step-icon">🔧</div>
-            <div>CLEAN</div>
+          <div class="story-card">
+            <div class="story-num">02</div>
+            <div class="story-title">Future Risk</div>
+            <div class="story-desc">When could a severe episode form?</div>
           </div>
-          <div class="flow-step-label">Pre-process</div>
-        </div>
-
-        <div class="flow-arrow-connector" aria-hidden="true">→</div>
-
-        <div class="flow-step" data-tooltip="PBL height, inversion, stability analysis">
-          <div class="flow-step-box">
-            <div class="flow-step-icon">🌡️</div>
-            <div>ATMOS.</div>
+          <div class="story-card">
+            <div class="story-num">03</div>
+            <div class="story-title">Atmosphere</div>
+            <div class="story-desc">Why are conditions trapping pollution?</div>
           </div>
-          <div class="flow-step-label">Atmospheric Analysis</div>
-        </div>
-
-        <div class="flow-arrow-connector" aria-hidden="true">→</div>
-
-        <div class="flow-step" data-tooltip="Pollution Trapping Index — the conceptual innovation">
-          <div class="flow-step-box step-pti">
-            <div class="flow-step-icon big">★</div>
-            <div>PTI</div>
+          <div class="story-card">
+            <div class="story-num">04</div>
+            <div class="story-title">Why?</div>
+            <div class="story-desc">Explainable predictions, not a black box</div>
           </div>
-          <div class="flow-step-label pti-label">Trapping Index</div>
-        </div>
-
-        <div class="flow-arrow-connector" aria-hidden="true">→</div>
-
-        <div class="flow-step" data-tooltip="ML model incorporating atmospheric physics features">
-          <div class="flow-step-box">
-            <div class="flow-step-icon">🤖</div>
-            <div>ML</div>
+          <div class="story-card">
+            <div class="story-num">05</div>
+            <div class="story-title">Action</div>
+            <div class="story-desc">Early warning enables timely decisions</div>
           </div>
-          <div class="flow-step-label">Forecast Model</div>
         </div>
 
-        <div class="flow-arrow-connector" aria-hidden="true">→</div>
+        <!-- Process Flow -->
+        <div class="section-header mt-24">
+          <div class="section-tag" aria-hidden="true">System Design</div>
+          <h2 class="section-title">How AeroShield Works</h2>
+          <p class="section-subtitle">From raw data to early warning — a physics-informed intelligence pipeline. PTI is
+            the conceptual innovation layer.</p>
+        </div>
 
-        <div class="flow-step" data-tooltip="Detect if and when a severe episode will occur">
-          <div class="flow-step-box">
-            <div class="flow-step-icon">🔍</div>
-            <div>DETECT</div>
+        <div class="process-flow-wrap animate-in" role="region" aria-label="AeroShield process flow diagram">
+          <div class="process-flow">
+
+            <div class="flow-step" data-tooltip="Raw pollution and weather data collection">
+              <div class="flow-step-box">
+                <div class="flow-step-icon">📡</div>
+                <div>DATA</div>
+              </div>
+              <div class="flow-step-label">Data Input</div>
+            </div>
+
+            <div class="flow-arrow-connector" aria-hidden="true">→</div>
+
+            <div class="flow-step" data-tooltip="Data cleaning, quality control, gap filling">
+              <div class="flow-step-box">
+                <div class="flow-step-icon">🔧</div>
+                <div>CLEAN</div>
+              </div>
+              <div class="flow-step-label">Pre-process</div>
+            </div>
+
+            <div class="flow-arrow-connector" aria-hidden="true">→</div>
+
+            <div class="flow-step" data-tooltip="PBL height, inversion, stability analysis">
+              <div class="flow-step-box">
+                <div class="flow-step-icon">🌡️</div>
+                <div>ATMOS.</div>
+              </div>
+              <div class="flow-step-label">Atmospheric Analysis</div>
+            </div>
+
+            <div class="flow-arrow-connector" aria-hidden="true">→</div>
+
+            <div class="flow-step" data-tooltip="Pollution Trapping Index — the conceptual innovation">
+              <div class="flow-step-box step-pti">
+                <div class="flow-step-icon big">★</div>
+                <div>PTI</div>
+              </div>
+              <div class="flow-step-label pti-label">Trapping Index</div>
+            </div>
+
+            <div class="flow-arrow-connector" aria-hidden="true">→</div>
+
+            <div class="flow-step" data-tooltip="ML model incorporating atmospheric physics features">
+              <div class="flow-step-box">
+                <div class="flow-step-icon">🤖</div>
+                <div>ML</div>
+              </div>
+              <div class="flow-step-label">Forecast Model</div>
+            </div>
+
+            <div class="flow-arrow-connector" aria-hidden="true">→</div>
+
+            <div class="flow-step" data-tooltip="Detect if and when a severe episode will occur">
+              <div class="flow-step-box">
+                <div class="flow-step-icon">🔍</div>
+                <div>DETECT</div>
+              </div>
+              <div class="flow-step-label">Episode Detection</div>
+            </div>
+
+            <div class="flow-arrow-connector" aria-hidden="true">→</div>
+
+            <div class="flow-step" data-tooltip="SHAP-style explanation of the model's reasoning">
+              <div class="flow-step-box">
+                <div class="flow-step-icon">💡</div>
+                <div>EXPLAIN</div>
+              </div>
+              <div class="flow-step-label">Explainability</div>
+            </div>
+
+            <div class="flow-arrow-connector" aria-hidden="true">→</div>
+
+            <div class="flow-step" data-tooltip="Early warning delivered to citizens, authorities, researchers">
+              <div class="flow-step-box"
+                style="border-color:var(--orange-400);color:var(--orange-400);background:rgba(251,146,60,0.08);">
+                <div class="flow-step-icon">🚨</div>
+                <div>WARN</div>
+              </div>
+              <div class="flow-step-label">Early Warning</div>
+            </div>
+
           </div>
-          <div class="flow-step-label">Episode Detection</div>
         </div>
 
-        <div class="flow-arrow-connector" aria-hidden="true">→</div>
+        <!-- Who Benefits -->
+        <div class="section-header mt-24">
+          <div class="section-tag" aria-hidden="true">Impact</div>
+          <h2 class="section-title">Who Benefits?</h2>
+          <p class="section-subtitle">AeroShield is designed to serve multiple stakeholders in the air-quality
+            ecosystem.</p>
+        </div>
 
-        <div class="flow-step" data-tooltip="SHAP-style explanation of the model's reasoning">
-          <div class="flow-step-box">
-            <div class="flow-step-icon">💡</div>
-            <div>EXPLAIN</div>
+        <div class="benefits-grid animate-in" role="region" aria-label="Beneficiary groups">
+          <div class="benefit-card">
+            <span class="benefit-icon" aria-hidden="true">👥</span>
+            <div class="benefit-title">Citizens</div>
+            <div class="benefit-desc">Know when pollution may become severe — potentially hours in advance — so they can
+              make informed decisions about outdoor activities.</div>
           </div>
-          <div class="flow-step-label">Explainability</div>
-        </div>
-
-        <div class="flow-arrow-connector" aria-hidden="true">→</div>
-
-        <div class="flow-step" data-tooltip="Early warning delivered to citizens, authorities, researchers">
-          <div class="flow-step-box" style="border-color:var(--orange-400);color:var(--orange-400);background:rgba(251,146,60,0.08);">
-            <div class="flow-step-icon">🚨</div>
-            <div>WARN</div>
+          <div class="benefit-card">
+            <span class="benefit-icon" aria-hidden="true">🏛️</span>
+            <div class="benefit-title">Authorities</div>
+            <div class="benefit-desc">Identify upcoming pollution episodes and support timely policy decisions,
+              emergency measures, and public communications.</div>
           </div>
-          <div class="flow-step-label">Early Warning</div>
+          <div class="benefit-card">
+            <span class="benefit-icon" aria-hidden="true">🔬</span>
+            <div class="benefit-title">Researchers</div>
+            <div class="benefit-desc">Study atmospheric conditions and pollution dynamics. Contribute to improving
+              forecasting models with better understanding of episode formation.</div>
+          </div>
         </div>
 
-      </div>
-    </div>
-
-    <!-- Who Benefits -->
-    <div class="section-header mt-24">
-      <div class="section-tag" aria-hidden="true">Impact</div>
-      <h2 class="section-title">Who Benefits?</h2>
-      <p class="section-subtitle">AeroShield is designed to serve multiple stakeholders in the air-quality ecosystem.</p>
-    </div>
-
-    <div class="benefits-grid animate-in" role="region" aria-label="Beneficiary groups">
-      <div class="benefit-card">
-        <span class="benefit-icon" aria-hidden="true">👥</span>
-        <div class="benefit-title">Citizens</div>
-        <div class="benefit-desc">Know when pollution may become severe — potentially hours in advance — so they can make informed decisions about outdoor activities.</div>
-      </div>
-      <div class="benefit-card">
-        <span class="benefit-icon" aria-hidden="true">🏛️</span>
-        <div class="benefit-title">Authorities</div>
-        <div class="benefit-desc">Identify upcoming pollution episodes and support timely policy decisions, emergency measures, and public communications.</div>
-      </div>
-      <div class="benefit-card">
-        <span class="benefit-icon" aria-hidden="true">🔬</span>
-        <div class="benefit-title">Researchers</div>
-        <div class="benefit-desc">Study atmospheric conditions and pollution dynamics. Contribute to improving forecasting models with better understanding of episode formation.</div>
-      </div>
-    </div>
-
-    <!-- Future Hardware -->
-    <div class="section-header mt-24">
-      <div class="section-tag" aria-hidden="true">Roadmap</div>
-      <h2 class="section-title">Phase 2: Hyperlocal Sensing</h2>
-      <p class="section-subtitle">Future development concept — not yet built or deployed.</p>
-    </div>
-
-    <div class="hardware-card animate-in" role="region" aria-label="Future hardware roadmap">
-      <div class="roadmap-badge" aria-label="Future roadmap">🚀 Future Roadmap — Not Yet Implemented</div>
-
-      <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:20px;max-width:680px;">
-        Future versions of AeroShield could integrate low-cost local sensors to provide hyperlocal ground-truth data, improving the calibration between official regional forecasts and actual local conditions.
-      </div>
-
-      <div class="hardware-flow" role="img" aria-label="Future hardware data flow: sensors to calibration">
-        <div class="hw-component">
-          <span class="hw-icon" aria-hidden="true">⚡</span>
-          <div class="hw-name">ESP32</div>
-          <div class="hw-sub">Microcontroller</div>
+        <!-- Future Hardware -->
+        <div class="section-header mt-24">
+          <div class="section-tag" aria-hidden="true">Roadmap</div>
+          <h2 class="section-title">Phase 2: Hyperlocal Sensing</h2>
+          <p class="section-subtitle">Future development concept — not yet built or deployed.</p>
         </div>
-        <div class="hw-plus" aria-hidden="true">+</div>
-        <div class="hw-component">
-          <span class="hw-icon" aria-hidden="true">🌫️</span>
-          <div class="hw-name">PM Sensor</div>
-          <div class="hw-sub">PM2.5 / PM10</div>
+
+        <div class="hardware-card animate-in" role="region" aria-label="Future hardware roadmap">
+          <div class="roadmap-badge" aria-label="Future roadmap">🚀 Future Roadmap — Not Yet Implemented</div>
+
+          <div style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:20px;max-width:680px;">
+            Future versions of AeroShield could integrate low-cost local sensors to provide hyperlocal ground-truth
+            data, improving the calibration between official regional forecasts and actual local conditions.
+          </div>
+
+          <div class="hardware-flow" role="img" aria-label="Future hardware data flow: sensors to calibration">
+            <div class="hw-component">
+              <span class="hw-icon" aria-hidden="true">⚡</span>
+              <div class="hw-name">ESP32</div>
+              <div class="hw-sub">Microcontroller</div>
+            </div>
+            <div class="hw-plus" aria-hidden="true">+</div>
+            <div class="hw-component">
+              <span class="hw-icon" aria-hidden="true">🌫️</span>
+              <div class="hw-name">PM Sensor</div>
+              <div class="hw-sub">PM2.5 / PM10</div>
+            </div>
+            <div class="hw-plus" aria-hidden="true">+</div>
+            <div class="hw-component">
+              <span class="hw-icon" aria-hidden="true">🌡️</span>
+              <div class="hw-name">Env. Sensor</div>
+              <div class="hw-sub">Temp / Humidity</div>
+            </div>
+            <div class="hw-arrow" aria-hidden="true">→</div>
+            <div class="hw-component" style="background:rgba(34,211,192,0.08);border-color:rgba(34,211,192,0.2);">
+              <span class="hw-icon" aria-hidden="true">📍</span>
+              <div class="hw-name" style="color:var(--teal-400);">Local Ground Truth</div>
+              <div class="hw-sub">Hyperlocal data</div>
+            </div>
+            <div class="hw-arrow" aria-hidden="true">→</div>
+            <div class="hw-component" style="background:rgba(26,159,255,0.08);border-color:rgba(26,159,255,0.2);">
+              <span class="hw-icon" aria-hidden="true">🤖</span>
+              <div class="hw-name" style="color:var(--blue-400);">Model Calibration</div>
+              <div class="hw-sub">Improved accuracy</div>
+            </div>
+          </div>
         </div>
-        <div class="hw-plus" aria-hidden="true">+</div>
-        <div class="hw-component">
-          <span class="hw-icon" aria-hidden="true">🌡️</span>
-          <div class="hw-name">Env. Sensor</div>
-          <div class="hw-sub">Temp / Humidity</div>
+
+        <!-- Project Positioning -->
+        <div class="section-header mt-24">
+          <div class="section-tag" aria-hidden="true">Positioning</div>
+          <h2 class="section-title">Scientific Positioning</h2>
         </div>
-        <div class="hw-arrow" aria-hidden="true">→</div>
-        <div class="hw-component" style="background:rgba(34,211,192,0.08);border-color:rgba(34,211,192,0.2);">
-          <span class="hw-icon" aria-hidden="true">📍</span>
-          <div class="hw-name" style="color:var(--teal-400);">Local Ground Truth</div>
-          <div class="hw-sub">Hyperlocal data</div>
+
+        <div class="grid-2 animate-in">
+          <div class="card">
+            <div style="font-size:13px;font-weight:700;color:var(--teal-400);margin-bottom:12px;">✅ What AeroShield
+              Claims</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+              <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px;"><span
+                  style="color:var(--green-400);">›</span>A physics-informed concept for pollution episode prediction
+              </li>
+              <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px;"><span
+                  style="color:var(--green-400);">›</span>PTI as a novel interpretable atmospheric risk index</li>
+              <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px;"><span
+                  style="color:var(--green-400);">›</span>Explainability-first design for public communication</li>
+              <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px;"><span
+                  style="color:var(--green-400);">›</span>A working prototype demonstrating the concept</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div style="font-size:13px;font-weight:700;color:var(--orange-400);margin-bottom:12px;">⚠ What AeroShield
+              Does Not Claim</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
+              <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px;"><span
+                  style="color:var(--orange-400);">›</span>Scientific validation or peer-reviewed accuracy</li>
+              <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px;"><span
+                  style="color:var(--orange-400);">›</span>Real-time data or live sensor network</li>
+              <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px;"><span
+                  style="color:var(--orange-400);">›</span>Deployed system or production infrastructure</li>
+              <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px;"><span
+                  style="color:var(--orange-400);">›</span>&gt;95% prediction accuracy claims</li>
+            </ul>
+          </div>
         </div>
-        <div class="hw-arrow" aria-hidden="true">→</div>
-        <div class="hw-component" style="background:rgba(26,159,255,0.08);border-color:rgba(26,159,255,0.2);">
-          <span class="hw-icon" aria-hidden="true">🤖</span>
-          <div class="hw-name" style="color:var(--blue-400);">Model Calibration</div>
-          <div class="hw-sub">Improved accuracy</div>
+
+        <!-- Footer -->
+        <div
+          style="margin-top:48px;padding:24px;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-xl);text-align:center;"
+          role="contentinfo">
+          <div style="font-size:20px;font-weight:900;color:var(--text-primary);margin-bottom:4px;">AeroShield</div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Physics-Informed Pollution Early
+            Warning System</div>
+          <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
+            <span class="tag-prototype">Prototype Mode</span>
+            <span class="tag-prototype"
+              style="background:rgba(34,211,192,0.1);border-color:rgba(34,211,192,0.2);color:var(--teal-400);">Demo
+              Simulation</span>
+            <span class="tag-prototype"
+              style="background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.2);color:#a78bfa;">Competition
+              Prototype</span>
+          </div>
+          <div style="font-size:11px;color:var(--text-muted);">All data displayed is simulated for demonstration
+            purposes. Not real-time. Not scientifically validated. Not for operational use.</div>
         </div>
-      </div>
-    </div>
 
-    <!-- Project Positioning -->
-    <div class="section-header mt-24">
-      <div class="section-tag" aria-hidden="true">Positioning</div>
-      <h2 class="section-title">Scientific Positioning</h2>
-    </div>
+      </section>
 
-    <div class="grid-2 animate-in">
-      <div class="card">
-        <div style="font-size:13px;font-weight:700;color:var(--teal-400);margin-bottom:12px;">✅ What AeroShield Claims</div>
-        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
-          <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px;"><span style="color:var(--green-400);">›</span>A physics-informed concept for pollution episode prediction</li>
-          <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px;"><span style="color:var(--green-400);">›</span>PTI as a novel interpretable atmospheric risk index</li>
-          <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px;"><span style="color:var(--green-400);">›</span>Explainability-first design for public communication</li>
-          <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px;"><span style="color:var(--green-400);">›</span>A working prototype demonstrating the concept</li>
-        </ul>
-      </div>
-      <div class="card">
-        <div style="font-size:13px;font-weight:700;color:var(--orange-400);margin-bottom:12px;">⚠ What AeroShield Does Not Claim</div>
-        <ul style="list-style:none;display:flex;flex-direction:column;gap:8px;">
-          <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px;"><span style="color:var(--orange-400);">›</span>Scientific validation or peer-reviewed accuracy</li>
-          <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px;"><span style="color:var(--orange-400);">›</span>Real-time data or live sensor network</li>
-          <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px;"><span style="color:var(--orange-400);">›</span>Deployed system or production infrastructure</li>
-          <li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px;"><span style="color:var(--orange-400);">›</span>&gt;95% prediction accuracy claims</li>
-        </ul>
-      </div>
-    </div>
+    </main>
+  </div><!-- /.app-wrapper -->
 
-    <!-- Footer -->
-    <div style="margin-top:48px;padding:24px;background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:var(--r-xl);text-align:center;" role="contentinfo">
-      <div style="font-size:20px;font-weight:900;color:var(--text-primary);margin-bottom:4px;">AeroShield</div>
-      <div style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">Physics-Informed Pollution Early Warning System</div>
-      <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
-        <span class="tag-prototype">Prototype Mode</span>
-        <span class="tag-prototype" style="background:rgba(34,211,192,0.1);border-color:rgba(34,211,192,0.2);color:var(--teal-400);">Demo Simulation</span>
-        <span class="tag-prototype" style="background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.2);color:#a78bfa;">Competition Prototype</span>
-      </div>
-      <div style="font-size:11px;color:var(--text-muted);">All data displayed is simulated for demonstration purposes. Not real-time. Not scientifically validated. Not for operational use.</div>
-    </div>
-
-  </section>
-
-</main>
-</div><!-- /.app-wrapper -->
-
-<!-- ================================================================
+  <!-- ================================================================
      MODAL — Why is the risk high?
      ================================================================ -->
-<div class="modal-overlay" id="whyModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h2 class="modal-title" id="modalTitle">🔍 Why is the risk high?</h2>
-      <button class="modal-close" aria-label="Close explanation modal">✕</button>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:20px;">
-        AeroShield is flagging a high episode risk because several atmospheric conditions are occurring simultaneously. Here's what each factor means in plain language:
-      </p>
-
-      <div class="modal-factor">
-        <div class="mf-header">
-          <span class="mf-icon" aria-hidden="true">🌫️</span>
-          <div class="mf-title">Low Planetary Boundary Layer (PBL)</div>
-        </div>
-        <p class="mf-desc">The Planetary Boundary Layer is the lowest part of the atmosphere that is mixed by surface heating and turbulence. When it is low, there is <strong>less vertical space for polluted air to mix</strong>. Think of it like a low ceiling in a room — smoke from a candle fills the room faster in a low-ceiling room than a high one. A PBL of ~520 m is much lower than the normal 1,200–2,000 m range.</p>
+  <div class="modal-overlay" id="whyModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">🔍 Why is the risk high?</h2>
+        <button class="modal-close" aria-label="Close explanation modal">✕</button>
       </div>
+      <div class="modal-body">
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:20px;">
+          AeroShield is flagging a high episode risk because several atmospheric conditions are occurring
+          simultaneously. Here's what each factor means in plain language:
+        </p>
 
-      <div class="modal-factor">
-        <div class="mf-header">
-          <span class="mf-icon" aria-hidden="true">💨</span>
-          <div class="mf-title">Weak Wind Speed (1.3 m/s)</div>
+        <div class="modal-factor">
+          <div class="mf-header">
+            <span class="mf-icon" aria-hidden="true">🌫️</span>
+            <div class="mf-title">Low Planetary Boundary Layer (PBL)</div>
+          </div>
+          <p class="mf-desc">The Planetary Boundary Layer is the lowest part of the atmosphere that is mixed by surface
+            heating and turbulence. When it is low, there is <strong>less vertical space for polluted air to
+              mix</strong>. Think of it like a low ceiling in a room — smoke from a candle fills the room faster in a
+            low-ceiling room than a high one. A PBL of ~520 m is much lower than the normal 1,200–2,000 m range.</p>
         </div>
-        <p class="mf-desc">Wind normally carries polluted air away from the city and replaces it with cleaner air. At only 1.3 m/s, the wind is very weak — <strong>polluted air is not being carried away quickly</strong>. The air mass over the region becomes stagnant, allowing PM2.5 to keep accumulating from ongoing emission sources (vehicles, industry, agriculture burning).</p>
-      </div>
 
-      <div class="modal-factor">
-        <div class="mf-header">
-          <span class="mf-icon" aria-hidden="true">🌡️</span>
-          <div class="mf-title">Temperature Inversion Detected</div>
+        <div class="modal-factor">
+          <div class="mf-header">
+            <span class="mf-icon" aria-hidden="true">💨</span>
+            <div class="mf-title">Weak Wind Speed (1.3 m/s)</div>
+          </div>
+          <p class="mf-desc">Wind normally carries polluted air away from the city and replaces it with cleaner air. At
+            only 1.3 m/s, the wind is very weak — <strong>polluted air is not being carried away quickly</strong>. The
+            air mass over the region becomes stagnant, allowing PM2.5 to keep accumulating from ongoing emission sources
+            (vehicles, industry, agriculture burning).</p>
         </div>
-        <p class="mf-desc">Normally, air temperature decreases with altitude, which allows warm surface air to rise and mix with cooler air above. A temperature inversion is when a layer of warm air sits above cooler surface air — <strong>this acts like a lid on the atmosphere</strong>. It actively suppresses vertical mixing, preventing pollutants from dispersing upward. This is one of the most critical drivers of severe pollution episodes.</p>
-      </div>
 
-      <div class="modal-factor">
-        <div class="mf-header">
-          <span class="mf-icon" aria-hidden="true">📈</span>
-          <div class="mf-title">Rising PM2.5 Trend</div>
+        <div class="modal-factor">
+          <div class="mf-header">
+            <span class="mf-icon" aria-hidden="true">🌡️</span>
+            <div class="mf-title">Temperature Inversion Detected</div>
+          </div>
+          <p class="mf-desc">Normally, air temperature decreases with altitude, which allows warm surface air to rise
+            and mix with cooler air above. A temperature inversion is when a layer of warm air sits above cooler surface
+            air — <strong>this acts like a lid on the atmosphere</strong>. It actively suppresses vertical mixing,
+            preventing pollutants from dispersing upward. This is one of the most critical drivers of severe pollution
+            episodes.</p>
         </div>
-        <p class="mf-desc">PM2.5 concentrations have been rising over the past several hours, even before the atmospheric conditions have reached their most unfavorable state. This means <strong>pollution is already building up before the expected episode</strong>. As trapping conditions worsen, there is a higher "pre-existing" concentration to accumulate further.</p>
-      </div>
 
-      <div class="modal-factor">
-        <div class="mf-header">
-          <span class="mf-icon" aria-hidden="true">🔗</span>
-          <div class="mf-title">Why These Factors Combine to Create High Risk</div>
+        <div class="modal-factor">
+          <div class="mf-header">
+            <span class="mf-icon" aria-hidden="true">📈</span>
+            <div class="mf-title">Rising PM2.5 Trend</div>
+          </div>
+          <p class="mf-desc">PM2.5 concentrations have been rising over the past several hours, even before the
+            atmospheric conditions have reached their most unfavorable state. This means <strong>pollution is already
+              building up before the expected episode</strong>. As trapping conditions worsen, there is a higher
+            "pre-existing" concentration to accumulate further.</p>
         </div>
-        <p class="mf-desc">Each of these factors individually would cause some concern. Together, they create a "perfect storm" for pollution accumulation: a <strong>shallow boundary layer</strong> limits the mixing volume, <strong>weak winds</strong> remove the horizontal escape route, and a <strong>temperature inversion</strong> blocks the vertical escape route. With PM2.5 already rising, continued emissions from traffic and industry have nowhere to go.</p>
-      </div>
 
-      <div class="modal-summary" role="note">
-        <strong>Summary:</strong> AeroShield is warning because the atmosphere is creating conditions where pollutants emitted near the surface cannot disperse — they can only accumulate. This is a prototype demonstration of how atmospheric understanding can provide earlier warning than simple AQI threshold alerts.
-        <br/><br/>
-        <em style="color:var(--text-muted);">Note: This is a prototype explanation using simulated data. Always follow official air-quality advisories from government agencies.</em>
+        <div class="modal-factor">
+          <div class="mf-header">
+            <span class="mf-icon" aria-hidden="true">🔗</span>
+            <div class="mf-title">Why These Factors Combine to Create High Risk</div>
+          </div>
+          <p class="mf-desc">Each of these factors individually would cause some concern. Together, they create a
+            "perfect storm" for pollution accumulation: a <strong>shallow boundary layer</strong> limits the mixing
+            volume, <strong>weak winds</strong> remove the horizontal escape route, and a <strong>temperature
+              inversion</strong> blocks the vertical escape route. With PM2.5 already rising, continued emissions from
+            traffic and industry have nowhere to go.</p>
+        </div>
+
+        <div class="modal-summary" role="note">
+          <strong>Summary:</strong> AeroShield is warning because the atmosphere is creating conditions where pollutants
+          emitted near the surface cannot disperse — they can only accumulate. This is a prototype demonstration of how
+          atmospheric understanding can provide earlier warning than simple AQI threshold alerts.
+          <br /><br />
+          <em style="color:var(--text-muted);">Note: This is a prototype explanation using simulated data. Always follow
+            official air-quality advisories from government agencies.</em>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Leaflet & Heatmap Scripts -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+  <!-- Leaflet & Heatmap Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 
-<!-- Main App Script -->
-<script src="script.js"></script>
+  <!-- Main App Script -->
+  <script src="script.js"></script>
 </body>
+
 </html>
